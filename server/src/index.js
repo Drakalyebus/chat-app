@@ -7,6 +7,7 @@ import morgan from 'morgan'
 import { errorHandler } from './middlewares/errorMiddleware.js'
 import authRouter from './routes/authRoutes.js'
 import userRouter from './routes/userRoutes.js'
+import chatRouter from './routes/chatRoutes.js'
 
 dotenv.config()
 
@@ -26,6 +27,7 @@ app.use(cookieParser())
 
 app.use('/auth', authRouter)
 app.use('/users', userRouter)
+app.use('/chats', chatRouter)
 
 app.use(errorHandler)
 
