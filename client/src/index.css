@@ -8,12 +8,27 @@
     transition: 0.35s ease;
     border: 0px solid transparent;
     outline: none;
+    text-align: center;
     font-family: 'Outfit';
-    color: var(--text-color);
+    color: var(--usual-text-color);
     font-weight: 600;
+}
+::selection{
+    background-color: var(--usual-text-color);
+    color: var(--light-text-color);
+}
+::-webkit-scrollbar{
+    display: none;
+}
+html, body, #root{
+    height: 100%;
+    background-color: var(--background-color);
 }
 button{
     cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     background-color: var(--button-color);
     color: var(--light-text-color);
     border-radius: var(--secondary-border-radius);
@@ -21,6 +36,7 @@ button{
     box-shadow: var(--shadow);
     transform: translateY(0px);
     font-size: large;
+    position: relative;
 }
 button:hover{
     background-color: var(--button-hover-color);
@@ -28,4 +44,32 @@ button:hover{
 }
 button:active{
     transform: translateY(2px) scale(0.95);
+}
+button.white{
+    background-color: var(--primary-color);
+    color: var(--usual-text-color);
+    border: var(--border);
+}
+button.white:hover{
+    background-color: var(--button-color);
+    color: var(--light-text-color);
+}
+button.mini{
+    padding: var(--secondary-padding);
+    border-radius: var(--secondary-border-radius);
+}
+input{
+    text-align: start;
+    background-color: var(--primary-color);
+    color: var(--unusual-text-color);
+    border: var(--border);
+    border-radius: var(--secondary-border-radius);
+    padding: var(--secondary-padding);
+    box-shadow: var(--shadow);
+    transform: translateY(0px);
+    font-size: large;
+    position: relative;
+}
+.wide{
+    width: 100%;
 }

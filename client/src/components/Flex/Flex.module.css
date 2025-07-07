@@ -1,7 +1,10 @@
-@import './vars.css';
+@import '../../vars.css';
 
 .flex{
     display: flex;
+    height: 100%;
+    width: 100%;
+    position: relative;
 }
 .fitX{
     width: fit-content;

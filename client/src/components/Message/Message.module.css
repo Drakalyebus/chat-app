@@ -1,0 +1,21 @@
+@import '../../vars.css';
+
+.author{
+    color: var(--unusual-text-color);
+}
+.author:empty{
+    display: none;
+}
+.content{
+    background-color: var(--primary-color);
+    border-radius: var(--border-radius);
+    border: var(--border);
+    padding: var(--padding);
+}
+.self{
+    background-color: var(--button-color);
+    color: var(--light-text-color);
+}
+.date{
+    font-size: xx-small;
+}

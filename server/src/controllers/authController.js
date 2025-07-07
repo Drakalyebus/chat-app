@@ -37,7 +37,8 @@ export const register = async (req, res, next) => {
 		return res.status(201).json({
 			_id: user._id,
 			username: user.username,
-			email: user.email
+			email: user.email,
+			chats: user.chats
 		})
 	} catch (err) {
 		next(err)
@@ -77,7 +78,25 @@ export const login = async (req, res, next) => {
 		res.json({
 			_id: user._id,
 			username: user.username,
-			email: user.email
+			email: user.email,
+			chats: user.chats
+		})
+	} catch (err) {
+		next(err)
+	}
+}
+
+export const checkAuth = async (req, res, next) => {
+	try {
+		if (!req.user) {
+			res.status(401)
+			throw new Error('Вы не авторизованы')
+		}
+		res.json({
+			_id: req.user._id,
+			username: req.user.username,
+			email: req.user.email,
+			chats: req.user.chats
 		})
 	} catch (err) {
 		next(err)

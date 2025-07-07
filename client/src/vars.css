@@ -1,9 +1,11 @@
 :root{
     --primary-color: mintcream;
-    --secondary-color: darkslategray;
+    --background-color: white;
+    --secondary-color: darkslategrey;
     --gradient-color1: mediumslateblue;
     --gradient-color2: salmon;
-    --text-color: black;
+    --usual-text-color: cornflowerblue;
+    --unusual-text-color: black;
     --light-text-color: whitesmoke;
     --border: 1px solid rgba(211, 211, 211, 0.5);
     --border-radius: 0.5em;
@@ -12,5 +14,10 @@
     --secondary-padding: 0.5em;
     --button-color: cornflowerblue;
     --button-hover-color: royalblue;
+    --link-color: mediumslateblue;
     --shadow: 0 0 10px rgba(211, 211, 211, 0.5);
+    --success-color: limegreen;
+    --error-color: orangered;
+    --success-border: 1px solid limegreen;
+    --error-border: 1px solid orangered;
 }

@@ -1,0 +1,25 @@
+import cn from 'classnames';
+import { useSelector } from 'react-redux';
+import { useState, useEffect } from 'react';
+
+import styles from './Message.module.css';
+import Flex from '../Flex/Flex';
+
+function Message({ text = "", author = "", createdAt = new Date() }) {
+    const { user } = useSelector(state => state.auth);
+    const [isSpamMessage, setIsSpamMessage] = useState(false);
+
+    // useEffect(() => setIsSpamMessage(isSpam(text)), [text]);
+
+    return (
+        <Flex align='start' direction='column' className={cn(styles.message)} fitX fitY gap>
+            <span className={cn(styles.author)}>{author}</span>
+            <Flex align='end' direction='column' gap className={cn(styles.content, { [styles.self]: user.username === author })}>
+                <span className={cn('wide', styles.text)}>{isSpamMessage ? `[Potential spam] ${text}` : text}</span>
+                <span className={cn(styles.date)}>{createdAt.toLocaleString()}</span>
+            </Flex>
+        </Flex>
+    )
+}
+
+export default Message;

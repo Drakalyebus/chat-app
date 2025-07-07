@@ -1,0 +1,12 @@
+@import '../../vars.css';
+
+.link{
+    width: fit-content;
+    height: fit-content;
+    color: var(--link-color);
+    text-decoration: underline;
+}
+.link>*{
+    color: var(--link-color);
+    text-decoration: underline;
+}
