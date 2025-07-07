@@ -1,0 +1,31 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');
+@import './vars.css';
+
+*{
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    transition: 0.35s ease;
+    border: 0px solid transparent;
+    outline: none;
+    font-family: 'Outfit';
+    color: var(--text-color);
+    font-weight: 600;
+}
+button{
+    cursor: pointer;
+    background-color: var(--button-color);
+    color: var(--light-text-color);
+    border-radius: var(--secondary-border-radius);
+    padding: var(--secondary-padding);
+    box-shadow: var(--shadow);
+    transform: translateY(0px);
+    font-size: large;
+}
+button:hover{
+    background-color: var(--button-hover-color);
+    transform: translateY(2px);
+}
+button:active{
+    transform: translateY(2px) scale(0.95);
+}

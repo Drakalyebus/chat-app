@@ -1,0 +1,18 @@
+@import './vars.css';
+
+.flex{
+    display: flex;
+}
+.fitX{
+    width: fit-content;
+}
+.fitY{
+    height: fit-content;
+}
+.gap{
+    gap: var(--padding);
+    padding: var(--padding);
+}
+.onlyGap{
+    padding: 0;
+}

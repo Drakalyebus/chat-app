@@ -1,0 +1,16 @@
+:root{
+    --primary-color: mintcream;
+    --secondary-color: darkslategray;
+    --gradient-color1: mediumslateblue;
+    --gradient-color2: salmon;
+    --text-color: black;
+    --light-text-color: whitesmoke;
+    --border: 1px solid rgba(211, 211, 211, 0.5);
+    --border-radius: 0.5em;
+    --padding: 1em;
+    --secondary-border-radius: 0.5em;
+    --secondary-padding: 0.5em;
+    --button-color: cornflowerblue;
+    --button-hover-color: royalblue;
+    --shadow: 0 0 10px rgba(211, 211, 211, 0.5);
+}
