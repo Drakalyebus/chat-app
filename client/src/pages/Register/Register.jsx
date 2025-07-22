@@ -6,6 +6,7 @@ import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router';
 import { registerUser } from '../../features/auth/authSlice';
+import { setContent } from '../../features/menu/menuSlice';
 
 import styles from './Register.module.css';
 
@@ -28,7 +29,12 @@ function Register() {
             await dispatch(registerUser({ email: email.value, password: password.value, username: username.value })).unwrap();
             navigate('/');
         } catch {
-            alert(`Register failed!`);
+            dispatch(setContent(
+                <>
+                    <h1 className={cn(styles.error)}>Register error</h1>
+                    <span className={cn(styles.error)}>Enter valid email, password and username</span>
+                </>
+            ))
         }
     }
 

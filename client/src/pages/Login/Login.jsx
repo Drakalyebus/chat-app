@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router';
 import { loginUser } from '../../features/auth/authSlice';
+import { setContent } from '../../features/menu/menuSlice';
 
 import styles from './Login.module.css';
 
@@ -26,7 +27,12 @@ function Login() {
             await dispatch(loginUser({ email: email.value, password: password.value })).unwrap();
             navigate('/');
         } catch {
-            alert(`Login error!`);
+            dispatch(setContent(
+                <>
+                    <h1 className={cn(styles.error)}>Login error</h1>
+                    <span className={cn(styles.error)}>The email or password is incorrect</span>
+                </>
+            ))
         }
     }
 

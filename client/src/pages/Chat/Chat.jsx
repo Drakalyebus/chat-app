@@ -55,7 +55,16 @@ function Chat() {
 	useEffect(() => {
 		(async () => {
 			if (!chatId) return
-			await dispatch(fetchChats()).unwrap();
+			try{
+				await dispatch(fetchChats()).unwrap();
+			} catch {
+				dispatch(setContent(
+					<>
+						<h1 className={cn(styles.error)}>Something went wrong</h1>
+						<span className={cn(styles.error)}>Try to reload the page</span>
+					</>
+				))
+			}
 		})()
 	}, [chatId, dispatch])
 
@@ -67,6 +76,12 @@ function Chat() {
 				if (passwordInput.getAttribute('isvalid') === 'true' && await checkPasswordAPI(chatId, passwordInput.getAttribute('value'))) {
 					setIsAvailable(true);
 					dispatch(setContent(undefined));
+				} else {
+					dispatch(setContent(
+						<>
+							<h1 className='error'>Enter valid password</h1>
+						</>
+					));
 				}
 			}
 			dispatch(setContent(
@@ -175,13 +190,28 @@ function Chat() {
 			const usernameInput = e.target.parentElement.children[2];
 			const inviteCodeInput = e.target.parentElement.children[3];
 			if (usernameInput.getAttribute('isvalid') === 'true' && inviteCodeInput.getAttribute('isvalid') === 'true') {
-				await dispatch(addUserToChat({
-					chatId,
-					username: usernameInput.getAttribute('value'),
-					inviteCode: inviteCodeInput.getAttribute('value')
-				})).unwrap();
-				dispatch(fetchChats());
-				dispatch(setContent(undefined));
+				try{
+					await dispatch(addUserToChat({
+						chatId,
+						username: usernameInput.getAttribute('value'),
+						inviteCode: inviteCodeInput.getAttribute('value')
+					})).unwrap();
+					dispatch(fetchChats());
+					dispatch(setContent(undefined));
+				} catch {
+					dispatch(setContent(
+						<>
+							<h1 className='error'>Something went wrong</h1>
+							<span className='error'>Try to reload the page</span>
+						</>
+					))
+				}
+			} else {
+				dispatch(setContent(
+					<>
+						<h1 className='error'>Enter valid username and invite-code</h1>
+					</>
+				));
 			}
 		}
 
@@ -197,12 +227,21 @@ function Chat() {
 
 	const titleChangeHandler = async (_, value) => {
 		setTitle(value);
-		await dispatch(editChat({
-			chatId,
-			payload: {
-				title: value
-			}
-		})).unwrap();
+		try{
+			await dispatch(editChat({
+				chatId,
+				payload: {
+					title: value
+				}
+			})).unwrap();
+		} catch {
+			dispatch(setContent(
+				<>
+					<h1 className='error'>Something went wrong</h1>
+					<span className='error'>Try to reload the page</span>
+				</>
+			))
+		}
 	}
 
 	const scrollDownClickHandler = () => {
@@ -300,12 +339,21 @@ function Chat() {
 							{[...chatUsers, user].filter(user => user.username.toLowerCase().includes(searchUsers.toLowerCase())).map(user2 => {
 								const clickHandler = () => {
 									const kickClickHandler = async () => {
-										await dispatch(kickUserFromChat({
-											chatId,
-											userId: user2._id
-										})).unwrap()
-										dispatch(fetchChats());
-										dispatch(setContent(undefined));
+										try{
+											await dispatch(kickUserFromChat({
+												chatId,
+												userId: user2._id
+											})).unwrap()
+											dispatch(fetchChats());
+											dispatch(setContent(undefined));
+										} catch {
+											dispatch(setContent(
+												<>
+													<h1 className={cn(styles.error)}>Something went wrong</h1>
+													<span className={cn(styles.error)}>Try to reload the page</span>
+												</>
+											))
+										}
 									}
 									const leaveClickHandler = async () => {
 										kickClickHandler();

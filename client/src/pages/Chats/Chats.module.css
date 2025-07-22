@@ -1,3 +1,5 @@
+@import '../../vars.css';
+
 .users:empty::after{
     content: 'No users yet...';
     font-size: xx-large;
@@ -8,4 +10,7 @@
 .chats:empty::after{
     content: 'No chats yet...';
     font-size: xx-large;
+}
+.error{
+    color: var(--error-color);
 }

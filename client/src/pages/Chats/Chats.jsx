@@ -37,8 +37,13 @@ function Chats() {
 				await dispatch(getAllUsers()).unwrap()
                 await dispatch(fetchChats()).unwrap()
                 dispatch(setUserChats(user._id))
-			} catch (err) {
-				alert(err.message)
+			} catch {
+				dispatch(setContent(
+                    <>
+                        <h1 className={cn(styles.error)}>Something went wrong</h1>
+                        <span className={cn(styles.error)}>Try to reload the page</span>
+                    </>
+                ));
 			}
         })()
     }, [dispatch, user]);
@@ -68,20 +73,28 @@ function Chats() {
             }
             dispatch(setAvailable(true))
 			navigate(`/chat/${chatId}`)
-		} catch (err) {
-			alert(err.message)
+		} catch {
+            dispatch(setContent(
+                <>
+                    <h1 className={cn(styles.error)}>Something went wrong</h1>
+                    <span className={cn(styles.error)}>Try to reload the page</span>
+                </>
+            ));
 		}
 	}
     const clickHandler = (otherUserId) => {
         const already = userChats.some(c => isUnseqArrEquals(c.members, [user._id, otherUserId]))
-        console.log(already, userChats)
         const privateChatHandler = (otherUserId) => {
             const enterClickHandler = (e, otherUserId) => {
                 const input = e.target.parentElement.children[2];
                 if (input.getAttribute('isvalid') === 'true') {
                     startChat(otherUserId, true, e.target.parentElement.children[2].getAttribute('value'))
                 } else {
-                    alert('Enter valid password!')
+                    dispatch(setContent(
+                        <>
+                            <h1 className='error'>Enter valid password</h1>
+                        </>
+                    ))
                 }
             }
             dispatch(setContent(

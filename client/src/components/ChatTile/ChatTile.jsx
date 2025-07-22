@@ -19,7 +19,16 @@ function ChatTile({ chat }) {
 
     useEffect(() => {
         (async () => {
-            await dispatch(getAllUsers()).unwrap()  
+            try{
+                await dispatch(getAllUsers()).unwrap()
+            } catch {
+                dispatch(setContent(
+                    <>
+                        <h1 className={cn(styles.error)}>Something went wrong</h1>
+                        <span className={cn(styles.error)}>Try to reload the page</span>
+                    </>
+                ))
+            }
         })()
     }, [dispatch]);
 
@@ -38,7 +47,12 @@ function ChatTile({ chat }) {
                             dispatch(setAvailable(true));
                             navigate(`/chat/${chat._id}`)
                         } catch {
-                            console.log('');
+                            dispatch(setContent(
+                                <>
+                                    <h1 className={cn(styles.error)}>Something went wrong</h1>
+                                    <span className={cn(styles.error)}>Try to reload the page</span>
+                                </>
+                            ))
                         }
                     }
                 }
@@ -49,9 +63,27 @@ function ChatTile({ chat }) {
                         <button onClick={enterClickHandler}>Enter</button>
                     </>
                 ));
-                await dispatch(joinPrivateChat({ chatId: chat._id })).unwrap()
+                try{
+                    await dispatch(joinPrivateChat({ chatId: chat._id })).unwrap()
+                } catch {
+                    dispatch(setContent(
+                        <>
+                            <h1 className={cn(styles.error)}>Something went wrong</h1>
+                            <span className={cn(styles.error)}>Try to reload the page</span>
+                        </>
+                    ))
+                }
             } else {
-                await dispatch(joinPublicChat({ chatId: chat._id })).unwrap()
+                try{
+                    await dispatch(joinPublicChat({ chatId: chat._id })).unwrap()
+                } catch {
+                    dispatch(setContent(
+                        <>
+                            <h1 className={cn(styles.error)}>Something went wrong</h1>
+                            <span className={cn(styles.error)}>Try to reload the page</span>
+                        </>
+                    ))
+                }
             }
             navigate(`/chat/${chat._id}`)
         }

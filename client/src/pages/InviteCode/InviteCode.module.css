@@ -1,0 +1,5 @@
+@import '../../vars.css';
+
+.error{
+    color: var(--error-color);
+}

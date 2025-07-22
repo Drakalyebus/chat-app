@@ -5,16 +5,24 @@ import styles from './InviteCode.module.css';
 import Flex from '../../components/Flex/Flex';
 import Back from '../../components/Back/Back';
 import { updateInviteCode } from '../../features/auth/authSlice';
+import { setContent } from '../../features/menu/menuSlice';
 import { useDispatch, useSelector } from 'react-redux';
 
 function InviteCode() {
     const dispatch = useDispatch();
     const { user } = useSelector(state => state.auth);
 
-    console.log(user);
-
     const updateClickHandler = async () => {
-        await dispatch(updateInviteCode()).unwrap();
+        try{
+            await dispatch(updateInviteCode()).unwrap();
+        } catch {
+            dispatch(setContent(
+                <>
+                    <h1 className={cn(styles.error)}>Something went wrong</h1>
+                    <span className={cn(styles.error)}>Try to reload the page</span>
+                </>
+            ))
+        }
     }
 
     return (

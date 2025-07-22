@@ -13,3 +13,6 @@
 .container:active{
     transform: translateY(2px) scale(0.95);
 }
+.error{
+    color: var(--error-color);
+}
