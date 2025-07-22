@@ -11,7 +11,6 @@ import Login from './pages/Login/Login';
 import Chat from './pages/Chat/Chat';
 import InviteCode from './pages/InviteCode/InviteCode';
 import Register from './pages/Register/Register';
-import AntiProtectedRoute from './components/AntiProtectedRoute';
 import { RouterProvider } from 'react-router-dom';
 import { SocketProvider } from './context/SocketProvider';
 import { Provider } from 'react-redux';
@@ -40,7 +39,7 @@ const router = createBrowserRouter([
     },
     {
         path: '/',
-        element: <AntiProtectedRoute />,
+        element: <ProtectedRoute anti />,
         children: [
             {
                 path: '/login',

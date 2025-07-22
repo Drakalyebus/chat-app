@@ -123,8 +123,8 @@ function Chats() {
     const searchChatsChangeHandler = (_, value) => setSearchChats(value);
     const searchUsersChangeHandler = (_, value) => setSearchUsers(value);
 
-    const logoutClickHandler = () => {
-        dispatch(logout());
+    const logoutClickHandler = async () => {
+        await dispatch(logout()).unwrap();
         navigate('/welcome');
     }
     const iCodeClickHandler = () => {

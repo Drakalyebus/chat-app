@@ -26,3 +26,15 @@ export const updateInviteCodeAPI = async inviteCode => {
 		.post(`${SERVER_URL}/auth/update-invite-code`, { inviteCode }, { withCredentials: true })
 		.then(res => res.data)
 }
+
+export const refreshAPI = async () => {
+	return axios
+		.post(`${SERVER_URL}/auth/refresh`, {}, { withCredentials: true })
+		.then(res => res.data)
+}
+
+export const logoutAPI = async () => {
+	return axios
+		.post(`${SERVER_URL}/auth/logout`, {}, { withCredentials: true })
+		.then(res => res.data)
+}

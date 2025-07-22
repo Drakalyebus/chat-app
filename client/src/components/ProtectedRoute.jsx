@@ -1,19 +1,28 @@
 import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Navigate, Outlet } from 'react-router-dom'
-import { checkAuth } from '../features/auth/authSlice'
+import { checkAuth, refresh } from '../features/auth/authSlice'
 import Loading from './Loading/Loading'
 
-const ProtectedRoute = () => {
+const ProtectedRoute = ({ anti }) => {
 	const dispatch = useDispatch()
 	const { user, status } = useSelector(state => state.auth)
 
 	useEffect(() => {
-		if (status === 'idle') dispatch(checkAuth())
-	}, [dispatch, status])
+		(async () => {
+			if (status === 'idle') dispatch(checkAuth())
+			else {
+				try{
+					// await dispatch(refresh()).unwrap()
+				} catch {
+					return <Navigate to={anti ? '/' : '/welcome'} replace />
+				}
+			}
+		})()
+	}, [dispatch, status, anti])
 
 	if (status === 'idle' || status === 'loading') return <Loading />
-	if (!user) return <Navigate to='/welcome' replace />
+	if (anti ? user : !user) return <Navigate to={anti ? '/' : '/welcome'} replace />
 
 	return <Outlet />
 }

@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-import { checkAuthAPI, loginUserAPI, registerUserAPI, updateInviteCodeAPI } from './authAPI'
+import { checkAuthAPI, loginUserAPI, registerUserAPI, updateInviteCodeAPI, refreshAPI, logoutAPI } from './authAPI'
 
 export const loginUser = createAsyncThunk(
 	'auth/login',
@@ -26,6 +26,14 @@ export const updateInviteCode = createAsyncThunk(
 	}
 )
 
+export const refresh = createAsyncThunk('auth/refresh', async () => {
+	return await refreshAPI()
+})
+
+export const logout = createAsyncThunk('auth/logout', async () => {
+	return await logoutAPI()
+})
+
 const authSlice = createSlice({
 	name: 'auth',
 	initialState: {
@@ -34,9 +42,6 @@ const authSlice = createSlice({
 		error: null
 	},
 	reducers: {
-		logout: state => {
-			state.user = null
-		},
 		// ?
 		setUser: (state, action) => {
 			state.user = action.payload
@@ -88,8 +93,28 @@ const authSlice = createSlice({
 				state.status = 'failed'
 				state.user = null
 			})
+			.addCase(refresh.fulfilled, (state, action) => {
+				state.user = action.payload
+				state.status = 'succeeded'
+				state.error = null
+			})
+			.addCase(refresh.rejected, (state, action) => {
+				state.error = action.error.message
+				state.status = 'failed'
+				state.user = null
+			})
+			.addCase(logout.fulfilled, (state) => {
+				state.user = null
+				state.status = 'succeeded'
+				state.error = null
+			})
+			.addCase(logout.rejected, (state, action) => {
+				state.error = action.error.message
+				state.status = 'failed'
+				state.user = null
+			})
 	}
 })
 
-export const { logout, setUser } = authSlice.actions
+export const { setUser } = authSlice.actions
 export default authSlice.reducer

@@ -1,6 +1,7 @@
 import User from '../models/userModel.js'
 import { generateTokens } from '../utils/generateTokens.js'
 import ShortUniqueId from 'short-unique-id'
+import jwt from 'jsonwebtoken'
 
 export const register = async (req, res, next) => {
 	try {
@@ -115,6 +116,46 @@ export const updateInviteCode = async (req, res, next) => {
 		const inviteCode = uid.rnd();
 		await User.findByIdAndUpdate(req.user._id, { inviteCode })
 		res.json({ inviteCode })
+	} catch (err) {
+		next(err)
+	}
+}
+export const refresh = async (req, res, next) => {
+	try {
+		const refreshToken = req.cookies?.refreshToken
+		console.log(refreshToken)
+		if (!refreshToken) {
+			res.status(401)
+			throw new Error('Пользователь не авторизован')
+		}
+		const userData = jwt.verify(refreshToken, process.env.JWT_REFRESH_TOKEN_SECRET)
+
+		const token = jwt.sign({ id: userData.id }, process.env.JWT_ACCESS_TOKEN_SECRET, {
+			expiresIn: process.env.JWT_ACCESS_TOKEN_EXPIRES_IN
+		})
+
+		res.cookie('accessToken', token, {
+			maxAge: 10 * 60 * 1000, // 10 минут
+			httpOnly: true
+		})
+
+		const user = await User.findById(userData.id)
+		res.json({
+			_id: user._id,
+			username: user.username,
+			email: user.email,
+			chats: user.chats,
+			inviteCode: user.inviteCode
+		})
+	} catch (err) {
+		next(err)
+	}
+}
+export const logout = async (req, res, next) => {
+	try {
+		// res.clearCookie('refreshToken', { httpOnly: true })
+		// res.clearCookie('accessToken', { httpOnly: true })
+		res.json({ message: 'Вы вышли из аккаунта' })
 	} catch (err) {
 		next(err)
 	}

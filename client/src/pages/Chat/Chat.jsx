@@ -80,6 +80,7 @@ function Chat() {
 					dispatch(setContent(
 						<>
 							<h1 className={cn(styles.error)}>Enter valid password</h1>
+							<span className={cn(styles.error)}>Try again</span>
 						</>
 					));
 				}
