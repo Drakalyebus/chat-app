@@ -1,0 +1,5 @@
+@import '../../vars.css';
+
+.title{
+    color: var(--error-color);
+}

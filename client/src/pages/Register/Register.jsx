@@ -12,6 +12,7 @@ import styles from './Register.module.css';
 import Flex from '../../components/Flex/Flex';
 import TextLink from '../../components/TextLink/TextLink';
 import Input from '../../components/Input/Input';
+import Back from '../../components/Back/Back';
 
 function Register() {
     const dispatch = useDispatch();
@@ -36,16 +37,19 @@ function Register() {
     const usernameChangeHandler = (_, value, { isValid }) => setUsername({ value, isValid });
 
     return (
-        <Flex direction='column' justify='center' gap>
-            <Flex className={cn(styles.container)} direction='column' gap fitX fitY>
-                <h1>Register</h1>
-                <Input type='text' placeholder='Username' onChange={usernameChangeHandler} validator={usernameValidator} className={cn('wide')} />
-                <Input type='email' placeholder='Email' onChange={emailChangeHandler} validator={emailValidator} className={cn('wide')} />
-                <Input type='password' placeholder='Password' onChange={passwordChangeHandler} validator={passwordValidator} className={cn('wide')} />
-                <button className={cn("wide")} onClick={registerClickHandler}>Register</button>
-                <TextLink to='/login'>Already have an account? Login</TextLink>
+        <>
+            <Back />
+            <Flex direction='column' justify='center' gap>
+                <Flex className={cn(styles.container)} direction='column' gap fitX fitY>
+                    <h1>Register</h1>
+                    <Input type='text' placeholder='Username' onChange={usernameChangeHandler} validator={usernameValidator} className={cn('wide')} />
+                    <Input type='email' placeholder='Email' onChange={emailChangeHandler} validator={emailValidator} className={cn('wide')} />
+                    <Input type='password' placeholder='Password' onChange={passwordChangeHandler} validator={passwordValidator} className={cn('wide')} />
+                    <button className={cn("wide")} onClick={registerClickHandler}>Register</button>
+                    <TextLink to='/login'>Already have an account? Login</TextLink>
+                </Flex>
             </Flex>
-        </Flex>
+        </>
     )
 }
 

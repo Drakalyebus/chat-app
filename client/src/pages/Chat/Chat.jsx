@@ -1,5 +1,5 @@
 import cn from 'classnames';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useParams, useNavigate } from 'react-router';
 import { useSocket } from '../../context/useSocket';
@@ -24,6 +24,7 @@ function Chat() {
 	const { chats } = useSelector(state => state.chat);
 	const chat = chats.find(chat => chat._id === chatId);
     const socket = useSocket();
+	const messagesRef = useRef(null);
     const dispatch = useDispatch();
     const { messages } = useSelector(state => state.chat);
     const { user } = useSelector(state => state.auth);
@@ -34,6 +35,8 @@ function Chat() {
 	const [title, setTitle] = useState(chat?.title);
 	const [mode, setMode] = useState('chat');
 	const [selectedMessage, setSelectedMessage] = useState(null);
+	const [searchUsers, setSearchUsers] = useState('');
+	const [searchMessages, setSearchMessages] = useState('');
 	const navigate = useNavigate();
 
 	useEffect(() => {
@@ -149,6 +152,7 @@ function Chat() {
 		})
 		setMode('chat');
 		setInput('');
+		setSelectedMessage(null);
 		dispatch(fetchMessages(chatId));
 	}
 
@@ -197,6 +201,15 @@ function Chat() {
 		})).unwrap();
 	}
 
+	const scrollDownClickHandler = () => {
+		if (messagesRef.current) {
+			messagesRef.current.scrollTo({
+				top: messagesRef.current.scrollHeight,
+				behavior: 'smooth'
+			})
+		}
+	}
+
 	if (!isAvailable) return <></>;
 
     return (
@@ -208,9 +221,10 @@ function Chat() {
 				</Flex>
 				<Flex justify='stretch' borders={['top']}>
 					<Flex direction='column' justify='stretch' gap className={cn(styles.container)}>
-						<Flex direction='column' className={cn(styles.overflow)}>
+						<Input def={input} onChange={(_, value) => setInput(value)} type="text" placeholder="Search messages..." className={cn(styles.search)} />
+						<Flex ref={messagesRef} direction='column' className={cn(styles.overflow)}>
 							<Flex direction='column' gap onlyGap fitY>
-								{messages.map(message => {
+								{messages.filter(message => message.text.toLowerCase().includes(input.toLowerCase())).map(message => {
 									const clickHandler = () => {
 										if (message.author === user._id) {
 											const deleteClickHandler = () => {
@@ -243,7 +257,7 @@ function Chat() {
 									}
 
 									return (
-										<Message title={message.author === user._id ? 'Click to act' : ''} onClick={clickHandler} key={message._id} {...message} author={[...users, user].find(user => user._id === message?.author)?.username || 'Unknown user'} />
+										<Message className={cn({ [styles.selected] : selectedMessage === message._id })} title={message.author === user._id ? 'Click to act' : ''} onClick={clickHandler} key={message._id} {...message} author={[...users, user].find(user => user._id === message?.author)?.username || 'Unknown user'} />
 									)
 								})}
 							</Flex>
@@ -255,14 +269,18 @@ function Chat() {
 							) : (
 								<button className={cn(styles.send)} onClick={sendMessage}>Send</button>
 							)}
+							<button className={cn('mini')} onClick={scrollDownClickHandler}>Down</button>
 						</Flex>
 					</Flex>
 					<Flex direction='column' className={cn(styles.overflow)} fitX borders={['left']}>
 						<Flex direction='column' gap fitY>
-							<button className={cn(styles.addUser)} onClick={addUserClickHandler} >
-								<FaUserPlus />
-							</button>
-							{[...chatUsers, user].map(user2 => {
+							<Flex justify='stretch' gap onlyGap fitY>
+								<Input type='text' autoUpdate className={cn('wide')} def={searchUsers} onChange={(_, value) => setSearchUsers(value)} placeholder='Search users...' />
+								<button className={cn(styles.addUser)} onClick={addUserClickHandler} >
+									<FaUserPlus />
+								</button>
+							</Flex>
+							{[...chatUsers, user].filter(user => user.username.toLowerCase().includes(searchUsers.toLowerCase())).map(user2 => {
 								const clickHandler = () => {
 									const kickClickHandler = async () => {
 										await dispatch(kickUserFromChat({

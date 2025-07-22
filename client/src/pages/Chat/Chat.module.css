@@ -16,3 +16,15 @@
 .overflow{
     overflow: auto;
 }
+.selected{
+    background-color: var(--secondary-color);
+}
+.selected>*{
+    color: var(--light-text-color);
+}
+.search{
+    position: absolute;
+    top: var(--secondary-padding);
+    left: var(--secondary-padding);
+    z-index: 1;
+}

@@ -63,7 +63,7 @@ function ChatTile({ chat }) {
             <span>{chat.privacy === 'private' ? 'Private' : 'Public'}{chat.members.includes(user._id) ? ', You are in a chat' : ''}</span>
             <Flex fitY gap onlyGap className={cn(styles.members)}>
                 {
-                    chat.members.slice(0, 3).map(member => [...users, user].find(user => user._id === member)).map(member => <button className={cn('mini', 'white')} key={member?._id}>{member?.username}</button>)
+                    chat.members.slice(0, 3).map(member => [...users, user].find(user => user._id === member)).map(member => <button className={cn('mini', 'white')} key={member?._id || user._id}>{member?.username}</button>)
                 }
                 {
                     chat.members.length > 3 ? <button className={cn('mini')}>...</button> : <></>

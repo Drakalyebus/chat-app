@@ -11,6 +11,7 @@ import styles from './Login.module.css';
 import Flex from '../../components/Flex/Flex';
 import TextLink from '../../components/TextLink/TextLink';
 import Input from '../../components/Input/Input';
+import Back from '../../components/Back/Back';
 
 function Login() {
     const dispatch = useDispatch();
@@ -33,15 +34,18 @@ function Login() {
     const passwordChangeHandler = (_, value, { isValid }) => setPassword({ value, isValid });
 
     return (
-        <Flex direction='column' justify='center' gap>
-            <Flex className={cn(styles.container)} direction='column' gap fitX fitY>
-                <h1>Login</h1>
-                <Input type='email' placeholder='Email' onChange={emailChangeHandler} validator={emailValidator} className={cn('wide')} />
-                <Input type='password' placeholder='Password' onChange={passwordChangeHandler} validator={passwordValidator} className={cn('wide')} />
-                <button className={cn("wide")} onClick={loginClickHandler}>Login</button>
-                <TextLink to='/register'>Don't have an account? Register</TextLink>
+        <>
+            <Back />
+            <Flex direction='column' justify='center' gap>
+                <Flex className={cn(styles.container)} direction='column' gap fitX fitY>
+                    <h1>Login</h1>
+                    <Input type='email' placeholder='Email' onChange={emailChangeHandler} validator={emailValidator} className={cn('wide')} />
+                    <Input type='password' placeholder='Password' onChange={passwordChangeHandler} validator={passwordValidator} className={cn('wide')} />
+                    <button className={cn("wide")} onClick={loginClickHandler}>Login</button>
+                    <TextLink to='/register'>Don't have an account? Register</TextLink>
+                </Flex>
             </Flex>
-        </Flex>
+        </>
     )
 }
 

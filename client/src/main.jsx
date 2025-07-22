@@ -2,6 +2,7 @@ import { createRoot } from 'react-dom/client';
 import { createBrowserRouter } from 'react-router';
 import ProtectedRoute from './components/ProtectedRoute';
 import MainLayout from './layouts/MainLayout/MainLayout';
+import Error from './pages/Error/Error';
 import Menu from './components/Menu/Menu';
 import Chats from './pages/Chats/Chats';
 import Main from './pages/Main/Main';
@@ -19,6 +20,7 @@ import './index.css';
 const router = createBrowserRouter([
     {
         path: '/',
+        errorElement: <Error />,
         element: <ProtectedRoute />,
         children: [
             {
