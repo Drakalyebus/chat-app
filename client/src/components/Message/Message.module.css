@@ -11,12 +11,15 @@
     border-radius: var(--border-radius);
     border: var(--border);
     padding: var(--padding);
+    border-top-left-radius: 0px;
 }
 .self{
     background-color: var(--button-color);
     color: var(--light-text-color);
     align-self: flex-end;
     cursor: pointer;
+    border-top-left-radius: var(--border-radius);
+    border-top-right-radius: 0px;
 }
 .selfAuthor{
     align-self: flex-end;
