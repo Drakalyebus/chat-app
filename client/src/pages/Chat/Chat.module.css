@@ -1,10 +1,10 @@
 @import '../../vars.css';
 
 .addUser{
-    background-color: transparent;
+    background-color: var(--primary-color);
 }
 .addUser:hover{
-    background-color: transparent;
+    background-color: var(--primary-color);
 }
 .send{
     background: linear-gradient(45deg, var(--gradient-color1), var(--gradient-color2));

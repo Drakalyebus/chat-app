@@ -1,5 +1,6 @@
 import cn from 'classnames';
 import { useLocation, useNavigate } from 'react-router';
+import { IoMdArrowRoundBack } from "react-icons/io";
 
 import styles from './Back.module.css';
 
@@ -19,7 +20,9 @@ function Back() {
     if (location.pathname === '/welcome') return <></>;
 
     return (
-        <button className={cn("mini", styles.back)} onClick={backClickHandler}>Back</button>
+        <button className={cn("mini", styles.back)} onClick={backClickHandler}>
+            <IoMdArrowRoundBack />
+        </button>
     )
 }
 

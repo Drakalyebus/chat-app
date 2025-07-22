@@ -5,5 +5,8 @@
     position: fixed;
     top: var(--secondary-padding);
     left: var(--secondary-padding);
-    opacity: 0.5;
+    background-color: var(--primary-color);
+}
+.back:hover{
+    background-color: var(--primary-color);
 }
