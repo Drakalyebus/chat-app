@@ -221,10 +221,10 @@ function Chat() {
 				</Flex>
 				<Flex justify='stretch' borders={['top']}>
 					<Flex direction='column' justify='stretch' gap className={cn(styles.container)}>
-						<Input def={input} onChange={(_, value) => setInput(value)} type="text" placeholder="Search messages..." className={cn(styles.search)} />
+						<Input def={searchMessages} onChange={(_, value) => setSearchMessages(value)} type="text" placeholder="Search messages..." className={cn(styles.search)} />
 						<Flex ref={messagesRef} direction='column' className={cn(styles.overflow)}>
 							<Flex direction='column' gap onlyGap fitY>
-								{messages.filter(message => message.text.toLowerCase().includes(input.toLowerCase())).map(message => {
+								{messages.filter(message => message.text.toLowerCase().includes(searchMessages.toLowerCase())).map(message => {
 									const clickHandler = () => {
 										if (message.author === user._id) {
 											const deleteClickHandler = () => {
@@ -263,7 +263,7 @@ function Chat() {
 							</Flex>
 						</Flex>
 						<Flex align='center' justify='center' gap onlyGap fitY className={cn(styles.input)}>
-							<Input type='text' def={input} onChange={(_, value) => setInput(value)} placeholder={mode === 'edit' ? 'Edit your message...' : 'Write your message...'} className={cn('wide')} />
+							<Input type='text' autoUpdate def={input} onChange={(_, value) => setInput(value)} placeholder={mode === 'edit' ? 'Edit your message...' : 'Write your message...'} className={cn('wide')} />
 							{mode === 'edit' ? (
 								<button className={cn(styles.send)} onClick={editMessage}>Edit</button>
 							) : (
@@ -275,7 +275,7 @@ function Chat() {
 					<Flex direction='column' className={cn(styles.overflow)} fitX borders={['left']}>
 						<Flex direction='column' gap fitY>
 							<Flex justify='stretch' gap onlyGap fitY>
-								<Input type='text' autoUpdate className={cn('wide')} def={searchUsers} onChange={(_, value) => setSearchUsers(value)} placeholder='Search users...' />
+								<Input type='text' className={cn('wide')} def={searchUsers} onChange={(_, value) => setSearchUsers(value)} placeholder='Search users...' />
 								<button className={cn(styles.addUser)} onClick={addUserClickHandler} >
 									<FaUserPlus />
 								</button>
