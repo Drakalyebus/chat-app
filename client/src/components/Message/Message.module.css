@@ -21,7 +21,6 @@
     background-color: var(--button-color);
     color: var(--light-text-color);
     align-self: flex-end;
-    cursor: pointer;
     border-top-left-radius: var(--border-radius);
     border-top-right-radius: 0px;
 }
@@ -41,4 +40,7 @@
 .message{
     width: 100%;
     border-radius: var(--border-radius);
+}
+.message:has(.self){
+    cursor: pointer;
 }
