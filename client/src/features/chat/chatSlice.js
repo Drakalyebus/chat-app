@@ -101,19 +101,15 @@ const chatSlice = createSlice({
                 state.userChats.push(action.payload);
 			})
 			.addCase(joinPublicChat.fulfilled, (state, action) => {
-				console.log(action)
 				state.currentChat = action.payload
 			})
             .addCase(loginUser.fulfilled, (state, action) => {
-                console.log('lol', action.payload._id, state.chats.map(chat => chat.members));
                 state.userChats = state.chats.filter(chat => chat.members.includes(action.payload._id));
             })
             .addCase(registerUser.fulfilled, (state, action) => {
-                console.log('lol', action.payload._id, state.chats.map(chat => chat.members));
                 state.userChats = state.chats.filter(chat => chat.members.includes(action.payload._id));
             })
             .addCase(checkAuth.fulfilled, (state, action) => {
-                console.log('lol', action.payload._id, state.chats.map(chat => chat.members));
                 state.userChats = state.chats.filter(chat => chat.members.includes(action.payload._id));
             })
 			.addCase(joinPrivateChat.fulfilled, (state) => {

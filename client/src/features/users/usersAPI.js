@@ -8,4 +8,3 @@ export const fetchUsersAPI = async () =>
 	axios
 		.get(USERS_URL, config)
 		.then(res => res.data)
-		.catch(err => console.log(err))

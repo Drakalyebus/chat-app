@@ -63,16 +63,6 @@ function ChatTile({ chat }) {
                         <button onClick={enterClickHandler}>Enter</button>
                     </>
                 ));
-                try{
-                    await dispatch(joinPrivateChat({ chatId: chat._id })).unwrap()
-                } catch {
-                    dispatch(setContent(
-                        <>
-                            <h1 className={cn(styles.error)}>Something went wrong</h1>
-                            <span className={cn(styles.error)}>Try to reload the page</span>
-                        </>
-                    ))
-                }
             } else {
                 try{
                     await dispatch(joinPublicChat({ chatId: chat._id })).unwrap()
@@ -84,8 +74,8 @@ function ChatTile({ chat }) {
                         </>
                     ))
                 }
+                navigate(`/chat/${chat._id}`)
             }
-            navigate(`/chat/${chat._id}`)
         }
     }
 
