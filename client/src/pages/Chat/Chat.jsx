@@ -134,6 +134,10 @@ function Chat() {
 		}
 	}, [socket, chatId, dispatch])
 
+	useEffect(() => {
+		scrollDownClickHandler();
+	}, [messages])
+
     const sendMessage = () => {
 		if (!socket || !input.trim()) return
 
@@ -209,6 +213,8 @@ function Chat() {
 			})
 		}
 	}
+
+	scrollDownClickHandler();
 
 	if (!isAvailable) return <></>;
 
