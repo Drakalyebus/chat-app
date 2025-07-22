@@ -1,10 +1,12 @@
 @import '../../vars.css';
 
-.back{
+.absolute{
     z-index: 999;
     position: fixed;
     top: var(--secondary-padding);
     left: var(--secondary-padding);
+}
+.back{
     background-color: var(--primary-color);
 }
 .back:hover{

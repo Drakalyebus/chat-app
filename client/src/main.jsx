@@ -1,6 +1,7 @@
 import { createRoot } from 'react-dom/client';
 import { createBrowserRouter } from 'react-router';
 import ProtectedRoute from './components/ProtectedRoute';
+import { ThemeProvider } from 'next-themes';
 import MainLayout from './layouts/MainLayout/MainLayout';
 import Error from './pages/Error/Error';
 import Menu from './components/Menu/Menu';
@@ -10,9 +11,9 @@ import Login from './pages/Login/Login';
 import Chat from './pages/Chat/Chat';
 import InviteCode from './pages/InviteCode/InviteCode';
 import Register from './pages/Register/Register';
+import AntiProtectedRoute from './components/AntiProtectedRoute';
 import { RouterProvider } from 'react-router-dom';
 import { SocketProvider } from './context/SocketProvider';
-import AntiProtectedRoute from './components/AntiProtectedRoute';
 import { Provider } from 'react-redux';
 import { store } from './app/store';
 import './index.css';
@@ -60,8 +61,10 @@ const router = createBrowserRouter([
 createRoot(document.getElementById('root')).render(
     <Provider store={store}>
         <SocketProvider>
-            <Menu />
-            <RouterProvider router={router} />
+            <ThemeProvider>
+                <Menu />
+                <RouterProvider router={router} />
+            </ThemeProvider>
         </SocketProvider>
     </Provider>
 );

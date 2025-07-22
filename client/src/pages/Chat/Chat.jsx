@@ -27,6 +27,7 @@ function Chat() {
 	const messagesRef = useRef(null);
     const dispatch = useDispatch();
     const { messages } = useSelector(state => state.chat);
+	const { content } = useSelector(state => state.menu);
     const { user } = useSelector(state => state.auth);
     const { users } = useSelector(state => state.users);
 	const { available } = useSelector(state => state.chat);
@@ -61,7 +62,6 @@ function Chat() {
 	useEffect(() => {
 		setIsAvailable(chat?.privacy === 'public');
 		if (chat !== undefined && chat.privacy === 'private') {
-			console.log('password', chat);
 			const enterClickHandler = async (e) => {
 				const passwordInput = e.target.parentElement.children[2];
 				if (passwordInput.getAttribute('isvalid') === 'true' && await checkPasswordAPI(chatId, passwordInput.getAttribute('value'))) {
@@ -77,7 +77,7 @@ function Chat() {
 				</>
 			));
 		}
-	}, [chat, dispatch, chatId]);
+	}, [chat, dispatch, chatId, navigate]);
     
     const [input, setInput] = useState('');
     const [log, setLog] = useState([]);
@@ -214,15 +214,26 @@ function Chat() {
 		}
 	}
 
-	scrollDownClickHandler();
+	useEffect(() => {
+		scrollDownClickHandler();
+	}, [messages, isAvailable])
 
-	if (!isAvailable) return <></>;
+	if (content === undefined && !isAvailable) {
+		return <Flex direction='column' justify='center' gap>
+			<h1 className={cn(styles.error)}>Chat "{chat?.title}" is not available</h1>
+			<button onClick={() => navigate('/')}>Go to main</button>
+		</Flex>
+	}
+
+	if (!isAvailable) return (
+		<></>
+	);
 
     return (
 		<>
-			<Back />
 			<Flex direction='column' justify='stretch'>
-				<Flex gap justify='center' fitY>
+				<Flex gap justify='stretch' fitY>
+					<Back absolute={false} />
 					<Input type='text' placeholder='Chat title' className={cn('wide', styles.title)} onChange={titleChangeHandler} def={title} />
 				</Flex>
 				<Flex justify='stretch' borders={['top']}>
@@ -275,7 +286,7 @@ function Chat() {
 							) : (
 								<button className={cn(styles.send)} onClick={sendMessage}>Send</button>
 							)}
-							<button className={cn('mini')} onClick={scrollDownClickHandler}>Down</button>
+							<button onClick={scrollDownClickHandler}>Down</button>
 						</Flex>
 					</Flex>
 					<Flex direction='column' className={cn(styles.overflow)} fitX borders={['left']}>

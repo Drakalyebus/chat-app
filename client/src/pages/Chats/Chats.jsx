@@ -6,6 +6,7 @@ import Input from '../../components/Input/Input';
 import ChatTile from '../../components/ChatTile/ChatTile';
 import Back from '../../components/Back/Back';
 import passwordValidator from '../../validators/passwordValidator';
+import { useTheme } from 'next-themes';
 import { setContent } from '../../features/menu/menuSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router';
@@ -24,6 +25,7 @@ function Chats() {
     const { chats } = useSelector(state => state.chat);
     const [searchChats, setSearchChats] = useState('');
     const [searchUsers, setSearchUsers] = useState('');
+    const { theme, setTheme } = useTheme();
 
     useEffect(() => {
         dispatch(setAvailable(false));
@@ -114,19 +116,25 @@ function Chats() {
     const iCodeClickHandler = () => {
         navigate('/invite-code');
     }
+    const changeThemeClickHandler = () => {
+        setTheme(theme === 'light' ? 'dark' : 'light');
+    }
 
     return (
         <>
-            <Back />
             <Flex justify="stretch">
                 <Flex direction='column' justify='stretch' borders={['right']} fitX>
                     <Flex direction='column' fitY gap>
-                        <span>You are logged in as</span>
+                        <Flex fitY gap onlyGap justify='stretch'>
+                            <Back absolute={false} />
+                            <span>You are logged in as</span>
+                        </Flex>
                         <h1>{user.username}</h1>
                         <span>{user.email}</span>
                         <Flex fitY gap onlyGap justify='stretch'>
-                            <button className={cn("wide")} onClick={logoutClickHandler}>Logout</button>
-                            <button className={cn("wide")} onClick={iCodeClickHandler}>I-code</button>
+                            <button className={cn("wide", 'mini')} onClick={logoutClickHandler}>Logout</button>
+                            <button className={cn("wide", 'mini')} onClick={iCodeClickHandler}>I-code</button>
+                            <button className={cn("wide", 'mini')} onClick={changeThemeClickHandler}>{theme === 'light' ? 'Dark' : 'Light'}</button>
                         </Flex>
                     </Flex>
                     <Flex borders={['top']} direction='column' className={cn(styles.users)}>

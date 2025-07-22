@@ -12,6 +12,8 @@
     --padding: 1em;
     --secondary-border-radius: 0.5em;
     --secondary-padding: 0.5em;
+    --third-border-radius: 0.5em;
+    --third-padding: 0.25em;
     --button-color: cornflowerblue;
     --button-hover-color: royalblue;
     --link-color: mediumslateblue;
@@ -20,4 +22,24 @@
     --error-color: orangered;
     --success-border: 1px solid limegreen;
     --error-border: 1px solid orangered;
+}
+
+[data-theme='dark'] {
+    --primary-color: #1e1e1e;
+    --background-color: #121212;
+    --secondary-color: #cfe3e0;
+    --gradient-color1: #6c78e7;
+    --gradient-color2: #d26f5f;
+    --usual-text-color: #7ea9ff;
+    --unusual-text-color: #f0f8ff;
+    --light-text-color: #0a0a0a;
+    --border: 1px solid rgba(255, 255, 255, 0.1);
+    --button-color: #7ea9ff;
+    --button-hover-color: #5f8ce0;
+    --link-color: #9c9eff;
+    --shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+    --success-color: #32cd32;
+    --error-color: #ff4c4c;
+    --success-border: 1px solid #32cd32;
+    --error-border: 1px solid #ff4c4c;
 }

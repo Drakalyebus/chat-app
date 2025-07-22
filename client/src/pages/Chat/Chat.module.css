@@ -28,3 +28,6 @@
     left: var(--secondary-padding);
     z-index: 1;
 }
+.error{
+    color: var(--error-color);
+}
