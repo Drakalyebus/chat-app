@@ -129,25 +129,29 @@ function Chats() {
                             <button className={cn("wide")} onClick={iCodeClickHandler}>I-code</button>
                         </Flex>
                     </Flex>
-                    <Flex borders={['top']} align="center" justify="start" direction='column' gap className={cn(styles.users)}>
-                        <h1>Users</h1>
-                        <Input placeholder='Search users...' onChange={searchUsersChangeHandler} def={searchUsers} className={cn('wide')} />
-                        {
-                            users.sort((a, b) => b.chats.length - a.chats.length).filter(user => user.username.toLowerCase().includes(searchUsers.toLowerCase())).map(user => 
-                                <button key={user._id} className={cn("wide", "white", styles.user)} onClick={() => clickHandler(user._id)}>{user.username}</button>
-                            )
-                        }
+                    <Flex borders={['top']} direction='column' className={cn(styles.users)}>
+                        <Flex direction='column' fitY gap>
+                            <h1>Users</h1>
+                            <Input placeholder='Search users...' onChange={searchUsersChangeHandler} def={searchUsers} className={cn('wide')} />
+                            {
+                                Array.from(users).sort((a, b) => b.chats.length - a.chats.length).filter(user => user.username.toLowerCase().includes(searchUsers.toLowerCase())).map(user => 
+                                    <button key={user._id} className={cn("wide", "white", styles.user)} onClick={() => clickHandler(user._id)}>{user.username}</button>
+                                )
+                            }
+                        </Flex>
                     </Flex>
                 </Flex>
                 <Flex borders={['right']} align="center" justify="start" direction='column' gap className={cn(styles.chats)}>
                     <h1>Chats</h1>
                     <Input placeholder='Search chats...' onChange={searchChatsChangeHandler} def={searchChats} className={cn('wide')} />
-                    <Flex gap onlyGap wrap='wrap' align='start'>
-                        {
-                            chats.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt)).filter(chat => chat.title.toLowerCase().includes(searchChats.toLowerCase())).map(chat => 
-                                <ChatTile key={chat._id} chat={chat} />
-                            )
-                        }
+                    <Flex direction='column' className={cn(styles.chatsList)}>
+                        <Flex gap onlyGap wrap='wrap' align='start' fitY>
+                            {
+                                Array.from(chats).sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt)).filter(chat => chat.title.toLowerCase().includes(searchChats.toLowerCase())).map(chat => 
+                                    <ChatTile key={chat._id} chat={chat} />
+                                )
+                            }
+                        </Flex>
                     </Flex>
                 </Flex>
             </Flex>

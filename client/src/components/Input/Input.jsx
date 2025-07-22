@@ -1,5 +1,5 @@
 import cn from 'classnames';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 import styles from './Input.module.css';
 
@@ -7,6 +7,13 @@ function Input({ type = "text", placeholder = "", def = "", onChange = () => {},
     const [value, setValue] = useState(def);
     const [isValid, setIsValid] = useState(validator(null, value, { isValid: true, message: "" }).isValid);
     const [message, setMessage] = useState(validator(null, value, { isValid: true, message: "" }).message);
+
+    useEffect(() => {
+        setValue(def);
+        const { isValid: newIsValid, message: newMessage } = validator(null, def, { isValid: true, message: "" });
+        setIsValid(newIsValid);
+        setMessage(newMessage);
+    }, [def, validator]);
 
     const changeHandler = (e) => {
         setValue(e.target.value);

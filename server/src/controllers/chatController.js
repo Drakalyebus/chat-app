@@ -23,16 +23,25 @@ export const createChat = async (req, res, next) => {
 	}
 }
 
-export const getMyChats = async (req, res, next) => {
-	try {
-		const userId = req.user._id
-		const chats = await Chat.find({ members: userId }).select('+password')
+// export const getMyChats = async (req, res, next) => {
+// 	try {
+// 		const userId = req.user._id
+// 		const chats = await Chat.find({ members: userId }).select('+password')
 
-		if (!chats) {
-			throw new Error('Чаты не найдены')
-		}
+// 		if (!chats) {
+// 			throw new Error('Чаты не найдены')
+// 		}
 
-		//? Подумать, что передавать
+// 		//? Подумать, что передавать
+// 		res.status(200).json(chats)
+// 	} catch (err) {
+// 		next(err)
+// 	}
+// }
+
+export const getChats = async (req, res, next) => {
+	try{
+		const chats = await Chat.find()
 		res.status(200).json(chats)
 	} catch (err) {
 		next(err)
@@ -44,9 +53,8 @@ export const joinPublicChat = async (req, res, next) => {
 		const chatId = req.params.id
 		const userId = req.user._id
 
-		console.log(chatId, userId)
-
 		const chat = await Chat.findById(chatId)
+		const user = await User.findById(userId)
 
 		if (!chat) {
 			res.status(404)
@@ -57,6 +65,8 @@ export const joinPublicChat = async (req, res, next) => {
 			res.status(200).json(chat._id)
 		} else {
 			chat.members.push(userId)
+			user.chats.push(chatId)
+			await user.save()
 			await chat.save()
 			res.status(200).json(chat._id)
 		}
@@ -230,45 +240,6 @@ export const editChat = async (req, res, next) => {
 		await chat.save()
 
 		res.status(200).json({ message: 'Чат успешно отредактирован' })
-	} catch (err) {
-		next(err)
-	}
-}
-export const deleteMessage = async (req, res, next) => {
-	try {
-		const user = req.user;
-		const messageId = req.params.id
-		const message = await Message.findByIdAndDelete(messageId)
-		if (!message) {
-			res.status(404)
-			throw new Error('Сообщение не найдено')
-		}
-		if (message.author.toString() !== user._id.toString()) {
-			res.status(403)
-			throw new Error('Недостаточно прав')
-		}
-		res.status(200).json({ message: 'Сообщение успешно удалено' })
-	} catch (err) {
-		next(err)
-	}
-}
-export const editMessage = async (req, res, next) => {
-	try {
-		const messageId = req.params.id
-		const user = req.user
-		const { text } = req.body
-		const message = await Message.findById(messageId)
-		if (!message) {
-			res.status(404)
-			throw new Error('Сообщение не найдено')
-		}
-		if (message.author.toString() !== user._id.toString()) {
-			res.status(403)
-			throw new Error('Недостаточно прав')
-		}
-		message.text = text
-		await message.save()
-		res.status(200).json({ message: 'Сообщение успешно отредактировано' })
 	} catch (err) {
 		next(err)
 	}

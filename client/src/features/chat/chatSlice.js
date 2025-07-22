@@ -55,7 +55,6 @@ export const editChat = createAsyncThunk('chat/editChat', async ({ chatId, paylo
 	const response = await editChatAPI(chatId, payload)
 	return response
 })
-export const editMess
 
 const chatSlice = createSlice({
 	name: 'chat',

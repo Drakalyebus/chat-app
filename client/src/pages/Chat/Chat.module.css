@@ -13,3 +13,6 @@
 .title{
     text-align: center;
 }
+.overflow{
+    overflow: auto;
+}

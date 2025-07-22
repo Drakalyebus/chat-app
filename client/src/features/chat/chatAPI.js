@@ -37,14 +37,3 @@ export const editChatAPI = async (chatId, payload) =>
 	axios
 		.patch(`${CHAT_URL}/${chatId}`, payload, config)
 		.then(res => res.data)
-export const editMessageAPI = async (messageId) => {
-	return axios
-		.patch(`${CHAT_URL}/${messageId}/edit-message`, config)
-		.then(res => res.data)
-}
-
-export const deleteMessageAPI = async (messageId) => {
-	return axios
-		.delete(`${CHAT_URL}/${messageId}/delete-message`, config)
-		.then(res => res.data)
-}

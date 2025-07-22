@@ -16,6 +16,7 @@
     background-color: var(--button-color);
     color: var(--light-text-color);
     align-self: flex-end;
+    cursor: pointer;
 }
 .selfAuthor{
     align-self: flex-end;

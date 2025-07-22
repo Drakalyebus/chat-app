@@ -46,7 +46,7 @@ function ChatTile({ chat }) {
                     <>
                         <h1>Enter chat password</h1>
                         <Input type="password" placeholder="Password" validator={passwordValidator} />
-                        <button>Enter</button>
+                        <button onClick={enterClickHandler}>Enter</button>
                     </>
                 ));
                 await dispatch(joinPrivateChat({ chatId: chat._id })).unwrap()

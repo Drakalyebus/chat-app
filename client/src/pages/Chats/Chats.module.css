@@ -2,6 +2,9 @@
     content: 'No users yet...';
     font-size: xx-large;
 }
+.users, .chatsList{
+    overflow: auto;
+}
 .chats:empty::after{
     content: 'No chats yet...';
     font-size: xx-large;

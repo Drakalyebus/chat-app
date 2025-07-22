@@ -83,6 +83,25 @@ io.on('connection', socket => {
 			console.log('Ошибка при сохранении сообщения', err)
 		}
 	})
+	socket.on('editMessage', async ({ messageId, text }) => {
+		console.log('Получено сообщение:', { messageId, text })
+		try {
+			const message = await Message.findByIdAndUpdate(messageId, { text })
+			io.to(message.chat).emit('messageEdited', message)
+		} catch (err) {
+			console.log('Ошибка при изменении сообщения', err)
+		}
+	})
+	socket.on('deleteMessage', async ({ messageId }) => {
+		console.log('Получено сообщение:', { messageId })
+		try {
+			const message = await Message.findByIdAndDelete(messageId)
+			await Chat.findByIdAndUpdate(message.chat, { $pull: { messages: messageId } })
+			io.to(message.chat).emit('messageDeleted', message)
+		} catch (err) {
+			console.log('Ошибка при удалении сообщения', err)
+		}
+	})
 
 	socket.on('disconnect', () => {
 		console.log('Пользователь отключился')
