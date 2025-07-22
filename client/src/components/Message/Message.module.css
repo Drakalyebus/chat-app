@@ -12,6 +12,10 @@
     border: var(--border);
     padding: var(--padding);
     border-top-left-radius: 0px;
+    overflow: hidden;
+    word-wrap: break-word;
+    text-wrap: balance;
+    max-width: 50%;
 }
 .self{
     background-color: var(--button-color);
