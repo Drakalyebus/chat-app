@@ -20,3 +20,16 @@ export const joinPrivateChatAPI = async (chatId, password) =>
 	axios
 		.post(`${CHAT_URL}/${chatId}/join-private`, { password }, config)
 		.then(res => res.data)
+
+export const addUserToChatAPI = async (chatId, username, inviteCode) =>
+	axios
+		.post(`${CHAT_URL}/${chatId}/add-user`, { username, inviteCode }, config)
+		.then(res => res.data)
+export const checkPasswordAPI = async (chatId, password) =>
+	axios
+		.post(`${CHAT_URL}/${chatId}/check-password`, { password }, config)
+		.then(res => res.data.isMatch)
+export const kickUserFromChatAPI = async (chatId, userId) =>
+	axios
+		.post(`${CHAT_URL}/${chatId}/kick-user`, { userId }, config)
+		.then(res => res.data)

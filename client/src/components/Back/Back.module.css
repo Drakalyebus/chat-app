@@ -1,0 +1,8 @@
+@import '../../vars.css';
+
+.back{
+    z-index: 999;
+    position: fixed;
+    top: var(--secondary-padding);
+    left: var(--secondary-padding);
+}

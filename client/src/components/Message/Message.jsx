@@ -13,10 +13,10 @@ function Message({ text = "", author = "", createdAt = new Date() }) {
 
     return (
         <Flex align='start' direction='column' className={cn(styles.message)} fitX fitY gap>
-            <span className={cn(styles.author)}>{author}</span>
-            <Flex align='end' direction='column' gap className={cn(styles.content, { [styles.self]: user.username === author })}>
+            <span className={cn(styles.author, { [styles.selfAuthor]: user.username === author })}>{author}</span>
+            <Flex align='end' direction='column' gap className={cn(styles.content, { [styles.self]: user.username === author })} fitX>
                 <span className={cn('wide', styles.text)}>{isSpamMessage ? `[Potential spam] ${text}` : text}</span>
-                <span className={cn(styles.date)}>{createdAt.toLocaleString()}</span>
+                <span className={cn(styles.date)}>{new Date(createdAt).toLocaleString()}</span>
             </Flex>
         </Flex>
     )

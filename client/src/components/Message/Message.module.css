@@ -15,7 +15,21 @@
 .self{
     background-color: var(--button-color);
     color: var(--light-text-color);
+    align-self: flex-end;
+}
+.selfAuthor{
+    align-self: flex-end;
+    text-align: end;
+}
+.self>.text, .self>.date{
+    color: var(--light-text-color);
 }
 .date{
     font-size: xx-small;
+}
+.text{
+    text-align: start;
+}
+.message{
+    width: 100%;
 }

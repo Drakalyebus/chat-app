@@ -1,9 +1,12 @@
 import User from '../models/userModel.js'
 import { generateTokens } from '../utils/generateTokens.js'
+import ShortUniqueId from 'short-unique-id'
 
 export const register = async (req, res, next) => {
 	try {
 		const { username, email, password } = req.body
+		const uid = new ShortUniqueId({ length: 6, dictionary: 'alphanum' });
+		const inviteCode = uid.rnd();
 		const userExists = await User.findOne({ $or: [{ email }, { username }] })
 
 		if (userExists) {
@@ -17,7 +20,8 @@ export const register = async (req, res, next) => {
 		const user = new User({
 			username,
 			email,
-			password
+			password,
+			inviteCode
 		})
 
 		await user.save()
@@ -38,7 +42,8 @@ export const register = async (req, res, next) => {
 			_id: user._id,
 			username: user.username,
 			email: user.email,
-			chats: user.chats
+			chats: user.chats,
+			inviteCode
 		})
 	} catch (err) {
 		next(err)
@@ -79,7 +84,8 @@ export const login = async (req, res, next) => {
 			_id: user._id,
 			username: user.username,
 			email: user.email,
-			chats: user.chats
+			chats: user.chats,
+			inviteCode: user.inviteCode
 		})
 	} catch (err) {
 		next(err)
@@ -96,8 +102,19 @@ export const checkAuth = async (req, res, next) => {
 			_id: req.user._id,
 			username: req.user.username,
 			email: req.user.email,
-			chats: req.user.chats
+			chats: req.user.chats,
+			inviteCode: req.user.inviteCode
 		})
+	} catch (err) {
+		next(err)
+	}
+}
+export const updateInviteCode = async (req, res, next) => {
+	try {
+		const uid = new ShortUniqueId({ length: 6, dictionary: 'alphanum' })
+		const inviteCode = uid.rnd();
+		await User.findByIdAndUpdate(req.user._id, { inviteCode })
+		res.json({ inviteCode })
 	} catch (err) {
 		next(err)
 	}

@@ -1,5 +1,6 @@
 import bcrypt from 'bcryptjs'
 import mongoose from 'mongoose'
+import ShortUniqueId from 'short-unique-id'
 
 const userSchema = mongoose.Schema(
 	{
@@ -27,6 +28,12 @@ const userSchema = mongoose.Schema(
 			required: [true, 'Пользователь должен иметь password'],
 			minlength: 6,
 			select: false
+		},
+		inviteCode: {
+			type: String,
+			unique: true,
+			trim: true,
+			required: [true, 'Пользователь должен иметь inviteCode']
 		},
 		chats: [
 			{

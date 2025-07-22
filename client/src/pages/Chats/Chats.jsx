@@ -3,12 +3,13 @@ import cn from 'classnames';
 import styles from './Chats.module.css';
 import Flex from '../../components/Flex/Flex';
 import Input from '../../components/Input/Input';
+import ChatTile from '../../components/ChatTile/ChatTile';
+import Back from '../../components/Back/Back';
 import passwordValidator from '../../validators/passwordValidator';
-import Menu from '../../components/Menu/Menu';
 import { setContent } from '../../features/menu/menuSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router';
-import { createChat, joinPublicChat, joinPrivateChat, setUserChats } from '../../features/chat/chatSlice';
+import { createChat, joinPublicChat, joinPrivateChat, setUserChats, fetchChats } from '../../features/chat/chatSlice';
 import { getAllUsers } from '../../features/users/usersSlice';
 import { useEffect } from 'react';
 import isUnseqArrEquals from '../../utils/isUnseqArrEquals';
@@ -24,11 +25,13 @@ function Chats() {
         (async () => {
             try {
 				await dispatch(getAllUsers()).unwrap()
+                await dispatch(fetchChats()).unwrap()
+                dispatch(setUserChats(user._id))
 			} catch (err) {
 				alert(err.message)
 			}
         })()
-    }, [dispatch]);
+    }, [dispatch, user]);
 
     const startChat = async (otherUserId, isPrivate = false, password = null) => {
         dispatch(setContent(undefined));
@@ -95,12 +98,24 @@ function Chats() {
 
     return (
         <>
-            <Flex align="center" justify="center" direction='column' gap>
-                {
-                    users.map(user => 
-                        <button key={user._id} className={cn("wide", styles.user)} onClick={() => clickHandler(user._id)}>{user.username}</button>
-                    )
-                }
+            <Back />
+            <Flex justify="stretch">
+                <Flex borders={['right']} align="center" justify="start" direction='column' gap className={cn(styles.chats)}>
+                    <h1>Chats</h1>
+                    {
+                        userChats.map(chat => 
+                            <ChatTile key={chat._id} chat={chat} />
+                        )
+                    }
+                </Flex>
+                <Flex borders={['right']} align="center" justify="start" direction='column' gap fitX className={cn(styles.users)}>
+                    <h1>Users</h1>
+                    {
+                        users.map(user => 
+                            <button key={user._id} className={cn("wide", styles.user)} onClick={() => clickHandler(user._id)}>{user.username}</button>
+                        )
+                    }
+                </Flex>
             </Flex>
         </>
     )

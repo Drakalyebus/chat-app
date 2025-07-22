@@ -20,3 +20,9 @@ export const checkAuthAPI = async () => {
 		.get(`${SERVER_URL}/auth/check-auth`, { withCredentials: true })
 		.then(res => res.data)
 }
+
+export const updateInviteCodeAPI = async inviteCode => {
+	return axios
+		.post(`${SERVER_URL}/auth/update-invite-code`, { inviteCode }, { withCredentials: true })
+		.then(res => res.data)
+}

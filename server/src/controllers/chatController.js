@@ -26,7 +26,7 @@ export const createChat = async (req, res, next) => {
 export const getMyChats = async (req, res, next) => {
 	try {
 		const userId = req.user._id
-		const chats = await Chat.find({ members: userId })
+		const chats = await Chat.find({ members: userId }).select('+password')
 
 		if (!chats) {
 			throw new Error('Чаты не найдены')
@@ -121,6 +121,88 @@ export const getChatMessages = async (req, res, next) => {
 		const messages = await Message.find({ chat: chatId })
 
 		res.status(200).json(messages)
+	} catch (err) {
+		next(err)
+	}
+}
+
+export const addUserToChat = async (req, res, next) => {
+	try {
+		const chatId = req.params.id
+		const username = req.body.username
+		const inviteCode = req.body.inviteCode
+
+		const user = await User.findOne({ username })
+		if (!user) {
+			res.status(404)
+			throw new Error('Пользователь не найден')
+		}
+
+		if (user.inviteCode !== inviteCode) {
+			res.status(400)
+			throw new Error('Неверный код приглашения')
+		}
+
+		const chat = await Chat.findById(chatId)
+		if (!chat) {
+			res.status(404)
+			throw new Error('Чат не найден')
+		}
+		if (chat.members.includes(user._id)) {
+			throw new Error('Пользователь уже состоит в чате')
+		}
+
+		chat.members.push(user._id)
+		user.chats.push(chat._id)
+		await user.save()
+		await chat.save()
+
+		res.status(200).json({ message: 'Пользователь успешно добавлен в чат' })
+	} catch (err) {
+		next(err)
+	}
+}
+
+export const checkPassword = async (req, res, next) => {
+	try {
+		const chatId = req.params.id
+		const { password } = req.body
+
+		const chat = await Chat.findById(chatId).select('+password')
+		if (!chat) {
+			res.status(404)
+			throw new Error('Чат не найден')
+		}
+
+		const isMatch = await chat.correctPassword(password, chat.password)
+
+		res.status(200).json({ isMatch })
+	} catch (err) {
+		next(err)
+	}
+}
+
+export const kickUserFromChat = async (req, res, next) => {
+	try {
+		const chatId = req.params.id
+		const userId = req.body.userId
+
+		const chat = await Chat.findById(chatId);
+		const user = await User.findById(userId);
+		if (!chat) {
+			res.status(404)
+			throw new Error('Чат не найден')
+		}
+		if (!chat.members.includes(userId)) {
+			res.status(400)
+			throw new Error('Пользователь не состоит в чате')
+		}
+
+		chat.members.splice(chat.members.indexOf(userId), 1);
+		user.chats.splice(user.chats.indexOf(chatId), 1);
+		console.log(user.chats, 'axaxxaxaax')
+		await user.save()
+		await chat.save()
 	} catch (err) {
 		next(err)
 	}

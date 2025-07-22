@@ -7,6 +7,7 @@ import Chats from './pages/Chats/Chats';
 import Main from './pages/Main/Main';
 import Login from './pages/Login/Login';
 import Chat from './pages/Chat/Chat';
+import InviteCode from './pages/InviteCode/InviteCode';
 import Register from './pages/Register/Register';
 import { RouterProvider } from 'react-router-dom';
 import { SocketProvider } from './context/SocketProvider';
@@ -26,6 +27,10 @@ const router = createBrowserRouter([
             {
                 path: '/chat/:chatId',
                 element: <Chat />
+            },
+            {
+                path: '/invite-code',
+                element: <InviteCode />
             }
         ]
     },

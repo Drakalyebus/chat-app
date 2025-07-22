@@ -4,7 +4,9 @@ import {
 	fetchChatsAPI,
 	fetchMessagesAPI,
 	joinPrivateChatAPI,
-	joinPublicChatAPI
+	joinPublicChatAPI,
+	addUserToChatAPI,
+	kickUserFromChatAPI
 } from './chatAPI'
 import { loginUser, registerUser, checkAuth } from '../auth/authSlice'
 
@@ -34,6 +36,20 @@ export const joinPrivateChat = createAsyncThunk(
 		return response
 	}
 )
+export const addUserToChat = createAsyncThunk(
+	'chat/addUserToChat',
+	async ({ chatId, username, inviteCode }) => {
+		const response = await addUserToChatAPI(chatId, username, inviteCode)
+		return response
+	}
+)
+export const kickUserFromChat = createAsyncThunk(
+	'chat/kickUserFromChat',
+	async ({ chatId, userId }) => {
+		const response = await kickUserFromChatAPI(chatId, userId)
+		return response
+	}
+)
 
 const chatSlice = createSlice({
 	name: 'chat',
@@ -46,7 +62,9 @@ const chatSlice = createSlice({
 	},
 	reducers: {
 		addMessage: (state, action) => {
-			state.messages.push(action.payload)
+			const payload = action.payload;
+			payload.author = payload.author._id;
+			state.messages.push(payload);
 		},
 		setCurrentChat: (state, action) => {
 			state.currentChat = action.payload
@@ -54,7 +72,7 @@ const chatSlice = createSlice({
 		},
         setUserChats: (state, action) => {
             const userId = action.payload;
-            state.userChats = state.chats.filter(chat => chat.members.includes(userId));
+            state.userChats = state.chats.filter(chat => chat.members.includes(userId) || chat.privacy === 'public');
         }
 	},
 	extraReducers: builder => {
@@ -89,6 +107,21 @@ const chatSlice = createSlice({
                 console.log('lol', action.payload._id, state.chats.map(chat => chat.members));
                 state.userChats = state.chats.filter(chat => chat.members.includes(action.payload._id));
             })
+			.addCase(joinPrivateChat.fulfilled, (state) => {
+				state.status = 'succeeded'
+			})
+			.addCase(addUserToChat.fulfilled, (state) => {
+				state.status = 'succeeded'
+			})
+			.addCase(addUserToChat.rejected, (state) => {
+				state.status = 'failed'
+			})
+			.addCase(kickUserFromChat.fulfilled, (state) => {
+				state.status = 'succeeded'
+			})
+			.addCase(kickUserFromChat.rejected, (state) => {
+				state.status = 'failed'
+			})
 	}
 })
 

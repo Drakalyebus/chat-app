@@ -1,0 +1,13 @@
+@import '../../vars.css';
+
+.container{
+    background-color: var(--primary-color);
+    border: var(--border);
+    border-radius: var(--border-radius);
+}
+.container:hover{
+    transform: translateY(2px);
+}
+.container:active{
+    transform: translateY(2px) scale(0.95);
+}

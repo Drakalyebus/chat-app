@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Golos+Text:wght@400..900&family=Outfit:wght@100..900&display=swap');
 @import './vars.css';
 
 *{
@@ -9,12 +9,12 @@
     border: 0px solid transparent;
     outline: none;
     text-align: center;
-    font-family: 'Outfit';
+    font-family: 'Golos Text';
     color: var(--usual-text-color);
     font-weight: 600;
 }
 ::selection{
-    background-color: var(--usual-text-color);
+    background-color: var(--unusual-text-color);
     color: var(--light-text-color);
 }
 ::-webkit-scrollbar{

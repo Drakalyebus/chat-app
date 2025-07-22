@@ -19,3 +19,15 @@
 .onlyGap{
     padding: 0;
 }
+.right{
+    border-right: var(--border);
+}
+.left{
+    border-left: var(--border);
+}
+.top{
+    border-top: var(--border);
+}
+.bottom{
+    border-bottom: var(--border);
+}

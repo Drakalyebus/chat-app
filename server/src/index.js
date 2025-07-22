@@ -71,7 +71,7 @@ io.on('connection', socket => {
 				text
 			})
 
-			await Chat.findByIdAndUpdate(chatId, { updatedAt: Date.now() })
+			await Chat.findByIdAndUpdate(chatId, { updatedAt: Date.now(), $push: { messages: message._id } })
 
 			const fullMessage = await Message.findById(message._id).populate(
 				'author',

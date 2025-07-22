@@ -5,8 +5,8 @@ import styles from './Input.module.css';
 
 function Input({ type = "text", placeholder = "", def = "", onChange = () => {}, className = "", validator = () => ({ isValid: null, message: "" }), ...props }) {
     const [value, setValue] = useState(def);
-    const [isValid, setIsValid] = useState(null);
-    const [message, setMessage] = useState("");
+    const [isValid, setIsValid] = useState(validator(null, value, { isValid: true, message: "" }).isValid);
+    const [message, setMessage] = useState(validator(null, value, { isValid: true, message: "" }).message);
 
     const changeHandler = (e) => {
         setValue(e.target.value);

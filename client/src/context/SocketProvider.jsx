@@ -13,5 +13,11 @@ export const SocketProvider = ({ children }) => {
 		return () => newSocket.close()
 	}, [])
 
+	useEffect(() => {
+		if (!socket) return
+		socket.on('connect', () => console.log('Connected to server!'))
+		socket.on('disconnect', () => console.log('Disconnected from server!'))
+	}, [socket])
+
 	return <SocketContext.Provider value={socket}>{children}</SocketContext.Provider>
 }
