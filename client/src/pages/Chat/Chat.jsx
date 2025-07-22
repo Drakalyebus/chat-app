@@ -79,7 +79,7 @@ function Chat() {
 				} else {
 					dispatch(setContent(
 						<>
-							<h1 className='error'>Enter valid password</h1>
+							<h1 className={cn(styles.error)}>Enter valid password</h1>
 						</>
 					));
 				}
@@ -201,15 +201,16 @@ function Chat() {
 				} catch {
 					dispatch(setContent(
 						<>
-							<h1 className='error'>Something went wrong</h1>
-							<span className='error'>Try to reload the page</span>
+							<h1 className={cn(styles.error)}>Username or invite-code is incorrect</h1>
+							<span className={cn(styles.error)}>Try again</span>
 						</>
 					))
 				}
 			} else {
 				dispatch(setContent(
 					<>
-						<h1 className='error'>Enter valid username and invite-code</h1>
+						<h1 className={cn(styles.error)}>Enter valid username and invite-code</h1>
+						<span className={cn(styles.error)}>Try again</span>
 					</>
 				));
 			}
@@ -237,8 +238,8 @@ function Chat() {
 		} catch {
 			dispatch(setContent(
 				<>
-					<h1 className='error'>Something went wrong</h1>
-					<span className='error'>Try to reload the page</span>
+					<h1 className={cn(styles.error)}>Something went wrong</h1>
+					<span className={cn(styles.error)}>Try to reload the page</span>
 				</>
 			))
 		}
