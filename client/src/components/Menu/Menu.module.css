@@ -20,11 +20,11 @@
     padding: var(--padding);
     background-color: var(--primary-color);
     border: var(--border);
-    padding-top: calc(var(--padding) + 2em + var(--padding));
+    padding-top: calc(var(--secondary-padding) + 2em + var(--padding));
     overflow: auto;
 }
 .close{
     position: absolute;
-    top: var(--padding);
-    left: var(--padding);
+    top: var(--secondary-padding);
+    left: var(--secondary-padding);
 }

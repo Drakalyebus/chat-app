@@ -200,9 +200,75 @@ export const kickUserFromChat = async (req, res, next) => {
 
 		chat.members.splice(chat.members.indexOf(userId), 1);
 		user.chats.splice(user.chats.indexOf(chatId), 1);
-		console.log(user.chats, 'axaxxaxaax')
-		await user.save()
+		if (chat.members.length === 0) {
+			await Chat.findByIdAndDelete(chatId);
+			await Message.deleteMany({ chat: chatId });
+		} else {
+			await chat.save();
+		}
+		await user.save();
+
+		res.status(200).json({ message: 'Пользователь успешно исключен из чата' })
+	} catch (err) {
+		next(err)
+	}
+}
+
+export const editChat = async (req, res, next) => {
+	try {
+		const chatId = req.params.id
+		const chat = await Chat.findById(chatId).select('+password')
+		if (!chat) {
+			res.status(404)
+			throw new Error('Чат не найден')
+		}
+		const { title, privacy, password } = req.body
+
+		chat.title = title ?? chat.title
+		chat.privacy = privacy ?? chat.privacy
+		chat.password = password ?? chat.password
 		await chat.save()
+
+		res.status(200).json({ message: 'Чат успешно отредактирован' })
+	} catch (err) {
+		next(err)
+	}
+}
+export const deleteMessage = async (req, res, next) => {
+	try {
+		const user = req.user;
+		const messageId = req.params.id
+		const message = await Message.findByIdAndDelete(messageId)
+		if (!message) {
+			res.status(404)
+			throw new Error('Сообщение не найдено')
+		}
+		if (message.author.toString() !== user._id.toString()) {
+			res.status(403)
+			throw new Error('Недостаточно прав')
+		}
+		res.status(200).json({ message: 'Сообщение успешно удалено' })
+	} catch (err) {
+		next(err)
+	}
+}
+export const editMessage = async (req, res, next) => {
+	try {
+		const messageId = req.params.id
+		const user = req.user
+		const { text } = req.body
+		const message = await Message.findById(messageId)
+		if (!message) {
+			res.status(404)
+			throw new Error('Сообщение не найдено')
+		}
+		if (message.author.toString() !== user._id.toString()) {
+			res.status(403)
+			throw new Error('Недостаточно прав')
+		}
+		message.text = text
+		await message.save()
+		res.status(200).json({ message: 'Сообщение успешно отредактировано' })
 	} catch (err) {
 		next(err)
 	}

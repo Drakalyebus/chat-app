@@ -11,6 +11,7 @@ import InviteCode from './pages/InviteCode/InviteCode';
 import Register from './pages/Register/Register';
 import { RouterProvider } from 'react-router-dom';
 import { SocketProvider } from './context/SocketProvider';
+import AntiProtectedRoute from './components/AntiProtectedRoute';
 import { Provider } from 'react-redux';
 import { store } from './app/store';
 import './index.css';
@@ -35,16 +36,22 @@ const router = createBrowserRouter([
         ]
     },
     {
-        path: '/login',
-        element: <Login />
-    },
-    {
-        path: '/register',
-        element: <Register />
-    },
-    {
-        path: '/welcome',
-        element: <Main />
+        path: '/',
+        element: <AntiProtectedRoute />,
+        children: [
+            {
+                path: '/login',
+                element: <Login />
+            },
+            {
+                path: '/register',
+                element: <Register />
+            },
+            {
+                path: '/welcome',
+                element: <Main />
+            }
+        ]
     }
 ]);
 

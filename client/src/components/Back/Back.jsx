@@ -1,16 +1,18 @@
 import cn from 'classnames';
-import { useLocation } from 'react-router';
+import { useLocation, useNavigate } from 'react-router';
 
 import styles from './Back.module.css';
 
 function Back() {
     const location = useLocation();
+    const navigate = useNavigate();
+
 
     const backClickHandler = () => {
         if (window.history.length > 1) {
             window.history.back();
         } else {
-            window.location.href = '/welcome';
+            navigate('/welcome');
         }
     }
 

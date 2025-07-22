@@ -10,5 +10,6 @@ export const store = configureStore({
 		chat: chatReducer,
 		users: usersReducer,
         menu: menuReducer
-	}
+	},
+	middleware: getDefaultMiddleware => getDefaultMiddleware({ serializableCheck: false })
 })

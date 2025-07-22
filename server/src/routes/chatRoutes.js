@@ -7,7 +7,10 @@ import {
 	joinPublicChat,
 	addUserToChat,
 	checkPassword,
-	kickUserFromChat
+	kickUserFromChat,
+	editChat,
+	deleteMessage,
+	editMessage
 } from '../controllers/chatController.js'
 import { authMiddleware } from '../middlewares/authMiddleware.js'
 
@@ -22,5 +25,8 @@ router.get('/:id/messages', getChatMessages)
 router.post('/:id/add-user', addUserToChat)
 router.post('/:id/check-password', checkPassword)
 router.post('/:id/kick-user', kickUserFromChat)
+router.patch('/:id', editChat)
+router.delete('/:id/delete-message', authMiddleware, deleteMessage)
+router.patch('/:id/edit-message', authMiddleware, editMessage)
 
 export default router

@@ -1,6 +1,15 @@
+@import '../../vars.css';
+
 .addUser{
     background-color: transparent;
 }
 .addUser:hover{
     background-color: transparent;
+}
+.send{
+    background: linear-gradient(45deg, var(--gradient-color1), var(--gradient-color2));
+    color: var(--light-text-color);
+}
+.title{
+    text-align: center;
 }

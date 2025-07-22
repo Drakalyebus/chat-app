@@ -6,7 +6,8 @@ import {
 	joinPrivateChatAPI,
 	joinPublicChatAPI,
 	addUserToChatAPI,
-	kickUserFromChatAPI
+	kickUserFromChatAPI,
+	editChatAPI
 } from './chatAPI'
 import { loginUser, registerUser, checkAuth } from '../auth/authSlice'
 
@@ -50,6 +51,11 @@ export const kickUserFromChat = createAsyncThunk(
 		return response
 	}
 )
+export const editChat = createAsyncThunk('chat/editChat', async ({ chatId, payload }) => {
+	const response = await editChatAPI(chatId, payload)
+	return response
+})
+export const editMess
 
 const chatSlice = createSlice({
 	name: 'chat',
@@ -57,6 +63,7 @@ const chatSlice = createSlice({
 		chats: [],
         userChats: [],
 		currentChat: null,
+		available: false,
 		messages: [],
 		status: 'idle'
 	},
@@ -73,7 +80,10 @@ const chatSlice = createSlice({
         setUserChats: (state, action) => {
             const userId = action.payload;
             state.userChats = state.chats.filter(chat => chat.members.includes(userId) || chat.privacy === 'public');
-        }
+        },
+		setAvailable: (state, action) => {
+			state.available = action.payload
+		}
 	},
 	extraReducers: builder => {
 		builder
@@ -122,8 +132,14 @@ const chatSlice = createSlice({
 			.addCase(kickUserFromChat.rejected, (state) => {
 				state.status = 'failed'
 			})
+			.addCase(editChat.fulfilled, (state) => {
+				state.status = 'succeeded'
+			})
+			.addCase(editChat.rejected, (state) => {
+				state.status = 'failed'
+			})
 	}
 })
 
-export const { addMessage, setCurrentChat, setUserChats } = chatSlice.actions
+export const { addMessage, setCurrentChat, setUserChats, setAvailable } = chatSlice.actions
 export default chatSlice.reducer

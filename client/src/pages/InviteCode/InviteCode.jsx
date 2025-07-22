@@ -21,10 +21,10 @@ function InviteCode() {
         <>
             <Back />
             <Flex direction='column' gap justify='center'>
-                <h1>Your invite code</h1>
+                <h1>Your invite-code</h1>
                 <span>The code is needed as a confirmation of your consent to add you to others who know this code in their chat</span>
                 <h2>{user?.inviteCode ?? 'Loading...'}</h2>
-                <button onClick={updateClickHandler}>Update invite code</button>
+                <button onClick={updateClickHandler}>Update invite-code</button>
             </Flex>
         </>
     )

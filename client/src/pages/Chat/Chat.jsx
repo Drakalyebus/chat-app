@@ -1,10 +1,10 @@
 import cn from 'classnames';
 import { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { useParams } from 'react-router';
+import { useParams, useNavigate } from 'react-router';
 import { useSocket } from '../../context/useSocket';
 import { setContent } from '../../features/menu/menuSlice';
-import { addMessage, setCurrentChat, fetchMessages, addUserToChat, fetchChats, kickUserFromChat } from '../../features/chat/chatSlice';
+import { addMessage, setCurrentChat, fetchMessages, addUserToChat, fetchChats, kickUserFromChat, editChat, setAvailable } from '../../features/chat/chatSlice';
 import { getAllUsers } from '../../features/users/usersSlice';
 import { FaUserPlus } from "react-icons/fa6";
 import usernameValidator from '../../validators/usernameValidator';
@@ -28,19 +28,23 @@ function Chat() {
     const { messages } = useSelector(state => state.chat);
     const { user } = useSelector(state => state.auth);
     const { users } = useSelector(state => state.users);
+	const { available } = useSelector(state => state.chat);
 	const chatUsers = users.filter(user => chat?.members.includes(user._id));
-	const [isAvailable, setIsAvailable] = useState(chat?.privacy === 'public');
+	const [isAvailable, setIsAvailable] = useState(chat?.privacy === 'public' || available);
+	const [title, setTitle] = useState(chat?.title);
+	const navigate = useNavigate();
+
+	useEffect(() => {
+		dispatch(setAvailable(isAvailable));
+	}, [dispatch, isAvailable])
+	
+	useEffect(() => {
+		setTitle(chat?.title);
+	}, [chat])
 
 	useEffect(() => {
 		dispatch(getAllUsers())
 	}, [dispatch])
-
-	useEffect(() => {
-		(async () => {
-			if (!chatId) return
-			await dispatch(fetchMessages(chatId)).unwrap();
-		})()
-	}, [chatId, dispatch])
 
 	useEffect(() => {
 		(async () => {
@@ -150,6 +154,7 @@ function Chat() {
 					username: usernameInput.getAttribute('value'),
 					inviteCode: inviteCodeInput.getAttribute('value')
 				})).unwrap();
+				dispatch(fetchChats());
 				dispatch(setContent(undefined));
 			}
 		}
@@ -158,10 +163,20 @@ function Chat() {
 			<>
 				<h1>Add user</h1>
 				<Input type='text' placeholder='Username' validator={usernameValidator} />
-				<Input type='text' placeholder='Invite code' validator={inviteCodeValidator} />
+				<Input type='text' placeholder='Invite-code' validator={inviteCodeValidator} />
 				<button onClick={addClickHandler}>Add user</button>
 			</>
 		));
+	}
+
+	const titleChangeHandler = async (_, value) => {
+		setTitle(value);
+		await dispatch(editChat({
+			chatId,
+			payload: {
+				title: value
+			}
+		})).unwrap();
 	}
 
 	if (!isAvailable) return <></>;
@@ -169,39 +184,50 @@ function Chat() {
     return (
 		<>
 			<Back />
-			<Flex justify='stretch'>
-				<Flex direction='column' justify='stretch' gap className={cn(styles.container)}>
-					<Flex align='start' direction='column' className={cn(styles.messages)} gap onlyGap>
-						{messages.map(message => <Message key={message._id} {...message} author={[...users, user].find(user => user._id === message?.author)?.username || 'Unknown user'} />)}
-					</Flex>
-					<Flex align='center' justify='center' gap onlyGap fitY className={cn(styles.input)}>
-						<Input type='text' def={input} onChange={(_, value) => setInput(value)} placeholder='Write your message...' className={cn('wide')} />
-						<button onClick={sendMessage}>Send</button>
-					</Flex>
+			<Flex direction='column' justify='stretch'>
+				<Flex gap justify='center' fitY>
+					<Input type='text' placeholder='Chat title' className={cn('wide', styles.title)} onChange={titleChangeHandler} def={title} />
 				</Flex>
-				<Flex direction='column' className={cn(styles.members)} gap fitX borders={['left']}>
-					<button className={cn(styles.addUser)} onClick={addUserClickHandler} >
-						<FaUserPlus />
-					</button>
-					{[...chatUsers, user].map(user2 => {
-						const clickHandler = () => {
-							const kickClickHandler = async () => {
-								await dispatch(kickUserFromChat({
-									chatId,
-									userId: user2._id
-								})).unwrap()
-								dispatch(setContent(undefined));
+				<Flex justify='stretch' borders={['top']}>
+					<Flex direction='column' justify='stretch' gap className={cn(styles.container)}>
+						<Flex align='start' direction='column' className={cn(styles.messages)} gap onlyGap>
+							{messages.map(message => <Message key={message._id} {...message} author={[...users, user].find(user => user._id === message?.author)?.username || 'Unknown user'} />)}
+						</Flex>
+						<Flex align='center' justify='center' gap onlyGap fitY className={cn(styles.input)}>
+							<Input type='text' def={input} onChange={(_, value) => setInput(value)} placeholder='Write your message...' className={cn('wide')} />
+							<button className={cn(styles.send)} onClick={sendMessage}>Send</button>
+						</Flex>
+					</Flex>
+					<Flex direction='column' className={cn(styles.members)} gap fitX borders={['left']}>
+						<button className={cn(styles.addUser)} onClick={addUserClickHandler} >
+							<FaUserPlus />
+						</button>
+						{[...chatUsers, user].map(user2 => {
+							const clickHandler = () => {
+								const kickClickHandler = async () => {
+									await dispatch(kickUserFromChat({
+										chatId,
+										userId: user2._id
+									})).unwrap()
+									dispatch(fetchChats());
+									dispatch(setContent(undefined));
+								}
+								const leaveClickHandler = async () => {
+									kickClickHandler();
+									dispatch(setAvailable(false));
+									navigate('/');
+								}
+								dispatch(setContent(
+									<>
+										<h1>Moderate</h1>
+										{user2._id === user._id ? <button onClick={leaveClickHandler}>Leave</button> : <button onClick={kickClickHandler}>Kick</button>}
+									</>
+								));
 							}
-							dispatch(setContent(
-								<>
-									<h1>Moderate</h1>
-									{user2._id === user._id ? <h3>This is you</h3> : <button onClick={kickClickHandler}>Kick</button>}
-								</>
-							));
-						}
 
-						return <button className={cn('wide')} key={user2._id} onClick={clickHandler}>{user2.username}</button>
-					})}
+							return <button className={cn('wide', 'white')} key={user2._id} onClick={clickHandler}>{user2.username}</button>
+						})}
+					</Flex>
 				</Flex>
 			</Flex>
 		</>

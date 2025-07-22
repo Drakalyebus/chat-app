@@ -9,9 +9,10 @@ import passwordValidator from '../../validators/passwordValidator';
 import { setContent } from '../../features/menu/menuSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router';
-import { createChat, joinPublicChat, joinPrivateChat, setUserChats, fetchChats } from '../../features/chat/chatSlice';
+import { createChat, joinPublicChat, joinPrivateChat, setUserChats, fetchChats, setAvailable } from '../../features/chat/chatSlice';
 import { getAllUsers } from '../../features/users/usersSlice';
-import { useEffect } from 'react';
+import { logout } from '../../features/auth/authSlice';
+import { useEffect, useState } from 'react';
 import isUnseqArrEquals from '../../utils/isUnseqArrEquals';
 
 function Chats() {
@@ -20,6 +21,13 @@ function Chats() {
     const { user } = useSelector(state => state.auth);
     const { users } = useSelector(state => state.users);
     const { userChats } = useSelector(state => state.chat);
+    const { chats } = useSelector(state => state.chat);
+    const [searchChats, setSearchChats] = useState('');
+    const [searchUsers, setSearchUsers] = useState('');
+
+    useEffect(() => {
+        dispatch(setAvailable(false));
+    }, [dispatch]);
 
     useEffect(() => {
         (async () => {
@@ -47,17 +55,16 @@ function Chats() {
                         members: [user._id, otherUserId]
                     })
                 ).unwrap()
-                alert('Chat created!')
             } else {
                 createdChat = userChats.find(c => isUnseqArrEquals(c.members, [user._id, otherUserId]))
             }
-			console.log(createdChat)
 			const chatId = createdChat._id
             if (createdChat.privacy === 'private') {
                 await dispatch(joinPrivateChat({ chatId, password: password })).unwrap()
             } else {
                 await dispatch(joinPublicChat({ chatId })).unwrap()
             }
+            dispatch(setAvailable(true))
 			navigate(`/chat/${chatId}`)
 		} catch (err) {
 			alert(err.message)
@@ -92,29 +99,56 @@ function Chats() {
                 </>
             ))   
         } else {
-            privateChatHandler('')
+            dispatch(setContent(undefined));
+            navigate(`/chat/${userChats.find(c => isUnseqArrEquals(c.members, [user._id, otherUserId]))._id}`)
         }
+    }
+
+    const searchChatsChangeHandler = (_, value) => setSearchChats(value);
+    const searchUsersChangeHandler = (_, value) => setSearchUsers(value);
+
+    const logoutClickHandler = () => {
+        dispatch(logout());
+        navigate('/welcome');
+    }
+    const iCodeClickHandler = () => {
+        navigate('/invite-code');
     }
 
     return (
         <>
             <Back />
             <Flex justify="stretch">
+                <Flex direction='column' justify='stretch' borders={['right']} fitX>
+                    <Flex direction='column' fitY gap>
+                        <span>You are logged in as</span>
+                        <h1>{user.username}</h1>
+                        <span>{user.email}</span>
+                        <Flex fitY gap onlyGap justify='stretch'>
+                            <button className={cn("wide")} onClick={logoutClickHandler}>Logout</button>
+                            <button className={cn("wide")} onClick={iCodeClickHandler}>I-code</button>
+                        </Flex>
+                    </Flex>
+                    <Flex borders={['top']} align="center" justify="start" direction='column' gap className={cn(styles.users)}>
+                        <h1>Users</h1>
+                        <Input placeholder='Search users...' onChange={searchUsersChangeHandler} def={searchUsers} className={cn('wide')} />
+                        {
+                            users.sort((a, b) => b.chats.length - a.chats.length).filter(user => user.username.toLowerCase().includes(searchUsers.toLowerCase())).map(user => 
+                                <button key={user._id} className={cn("wide", "white", styles.user)} onClick={() => clickHandler(user._id)}>{user.username}</button>
+                            )
+                        }
+                    </Flex>
+                </Flex>
                 <Flex borders={['right']} align="center" justify="start" direction='column' gap className={cn(styles.chats)}>
                     <h1>Chats</h1>
-                    {
-                        userChats.map(chat => 
-                            <ChatTile key={chat._id} chat={chat} />
-                        )
-                    }
-                </Flex>
-                <Flex borders={['right']} align="center" justify="start" direction='column' gap fitX className={cn(styles.users)}>
-                    <h1>Users</h1>
-                    {
-                        users.map(user => 
-                            <button key={user._id} className={cn("wide", styles.user)} onClick={() => clickHandler(user._id)}>{user.username}</button>
-                        )
-                    }
+                    <Input placeholder='Search chats...' onChange={searchChatsChangeHandler} def={searchChats} className={cn('wide')} />
+                    <Flex gap onlyGap wrap='wrap' align='start'>
+                        {
+                            chats.sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt)).filter(chat => chat.title.toLowerCase().includes(searchChats.toLowerCase())).map(chat => 
+                                <ChatTile key={chat._id} chat={chat} />
+                            )
+                        }
+                    </Flex>
                 </Flex>
             </Flex>
         </>
