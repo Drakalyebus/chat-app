@@ -1,14 +1,15 @@
 import bcrypt from 'bcryptjs'
 import mongoose from 'mongoose'
+import fill from '../utils/filler.js'
 
 const chatSchema = mongoose.Schema(
 	{
 		title: {
 			type: String,
-			required: [true, 'Название чата обязательно'],
+			// required: [true, 'Название чата обязательно'],
+			// minlength: 3,
+			// maxlength: 50,
 			trim: true,
-			minlength: 3,
-			maxlength: 50,
 			default: 'New Chat'
 		},
 		privacy: {
@@ -42,10 +43,12 @@ const chatSchema = mongoose.Schema(
 )
 
 chatSchema.pre('save', async function (next) {
-	if (!this.isModified('password')) return next()
-	if (this.password) {
+	if (this.password && this.isModified('password')) {
 		const salt = await bcrypt.genSalt(10)
 		this.password = await bcrypt.hash(this.password, salt)
+	}
+	if (this.title && this.isModified('title')) {
+		this.title = fill(this.title)
 	}
 	next()
 })

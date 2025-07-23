@@ -278,7 +278,7 @@ function Chat() {
 			<Flex direction='column' justify='stretch'>
 				<Flex gap justify='stretch' fitY>
 					<Back absolute={false} />
-					<Input type='text' placeholder='Chat title' className={cn('wide', styles.title)} onChange={titleChangeHandler} def={title} />
+					<Input type='text' placeholder='Chat title' className={cn('wide', 'invisible', styles.title)} onChange={titleChangeHandler} def={title} />
 				</Flex>
 				<Flex justify='stretch' borders={['top']}>
 					<Flex direction='column' justify='stretch' gap className={cn(styles.container)}>
