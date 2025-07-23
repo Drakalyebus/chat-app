@@ -59,7 +59,7 @@ function ChatTile({ chat }) {
                 dispatch(setContent(
                     <>
                         <h1>Enter chat password</h1>
-                        <Input type="password" placeholder="Password" validator={passwordValidator} />
+                        <Input type="password" placeholder="Password" validator={passwordValidator} className={cn('wide')} />
                         <button onClick={enterClickHandler}>Enter</button>
                     </>
                 ));

@@ -12,6 +12,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router';
 import { createChat, joinPublicChat, joinPrivateChat, setUserChats, fetchChats, setAvailable } from '../../features/chat/chatSlice';
 import { getAllUsers } from '../../features/users/usersSlice';
+import inviteCodeValidator from '../../validators/inviteCodeValidator';
 import { logout } from '../../features/auth/authSlice';
 import { useEffect, useState } from 'react';
 import isUnseqArrEquals from '../../utils/isUnseqArrEquals';
@@ -48,7 +49,7 @@ function Chats() {
         })()
     }, [dispatch, user]);
 
-    const startChat = async (otherUserId, isPrivate = false, password = null) => {
+    const startChat = async (otherUserId, isPrivate = false, password = null, inviteCode = null) => {
         dispatch(setContent(undefined));
 		try {
             const already = userChats.some(c => isUnseqArrEquals(c.members, [user._id, otherUserId]))
@@ -59,7 +60,8 @@ function Chats() {
                         title: `${user.username}'s chat with ${users.find(u => u._id === otherUserId).username}`,
                         privacy: isPrivate ? 'private' : 'public',
                         password: isPrivate ? password : null,
-                        members: [user._id, otherUserId]
+                        members: [user._id, otherUserId],
+                        inviteCode
                     })
                 ).unwrap()
             } else {
@@ -87,12 +89,13 @@ function Chats() {
         const privateChatHandler = (otherUserId) => {
             const enterClickHandler = (e, otherUserId) => {
                 const input = e.target.parentElement.children[2];
-                if (input.getAttribute('isvalid') === 'true') {
-                    startChat(otherUserId, true, e.target.parentElement.children[2].getAttribute('value'))
+                const inviteCodeInput = e.target.parentElement.children[3];
+                if (input.getAttribute('isvalid') === 'true' && inviteCodeInput.getAttribute('isvalid') === 'true') {
+                    startChat(otherUserId, true, e.target.parentElement.children[2].getAttribute('value'), inviteCodeInput.getAttribute('value'));
                 } else {
                     dispatch(setContent(
                         <>
-                            <h1 className={cn(styles.error)}>Enter valid password</h1>
+                            <h1 className={cn(styles.error)}>Enter valid password and invite-code</h1>
                             <span className={cn(styles.error)}>Try again</span>
                         </>
                     ))
@@ -102,6 +105,29 @@ function Chats() {
                 <>
                     <h1>Enter chat password</h1>
                     <Input type='password' placeholder='Password' validator={passwordValidator} className={cn('wide')} />
+                    <Input type='text' placeholder='Invite-code' validator={inviteCodeValidator} className={cn('wide')} />
+                    <button className={cn("wide")} onClick={(e) => enterClickHandler(e, otherUserId)}>Enter</button>
+                </>
+            ))
+        }
+        const publicChatHandler = (otherUserId) => {
+            const enterClickHandler = (e, otherUserId) => {
+                const input = e.target.parentElement.children[2];
+                if (input.getAttribute('isvalid') === 'true') {
+                    startChat(otherUserId, false, null, input.getAttribute('value'));
+                } else {
+                    dispatch(setContent(
+                        <>
+                            <h1 className={cn(styles.error)}>Enter valid invite-code</h1>
+                            <span className={cn(styles.error)}>Try again</span>
+                        </>
+                    ))
+                }
+            }
+            dispatch(setContent(
+                <>
+                    <h1>Enter invite-code</h1>
+                    <Input type='text' placeholder='Invite-code' validator={inviteCodeValidator} className={cn('wide')} />
                     <button className={cn("wide")} onClick={(e) => enterClickHandler(e, otherUserId)}>Enter</button>
                 </>
             ))
@@ -110,7 +136,7 @@ function Chats() {
             dispatch(setContent(
                 <>
                     <h1>Select type of new chat</h1>
-                    <button className={cn("wide")} onClick={() => startChat(otherUserId)}>Public</button>
+                    <button className={cn("wide")} onClick={() => publicChatHandler(otherUserId)}>Public</button>
                     <button className={cn("wide")} onClick={() => privateChatHandler(otherUserId)}>Private</button>
                 </>
             ))   

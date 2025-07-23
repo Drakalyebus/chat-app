@@ -4,10 +4,17 @@ import User from '../models/userModel.js'
 
 export const createChat = async (req, res, next) => {
 	try {
-		const { title, privacy, password, members } = req.body
+		const { title, privacy, password, members, inviteCode } = req.body
 
 		if (!members || members.length < 2) {
 			throw new Error('Для создания чата необходимо указать минимум 2 участника')
+		}
+
+		const otherId = members.find(id => id.toString() !== req.user._id.toString())
+		const otherUser = await User.findById(otherId);
+
+		if (otherUser.inviteCode !== inviteCode) {
+			throw new Error('Неверный код приглашения')	
 		}
 
 		if (privacy === 'private' && !password) {

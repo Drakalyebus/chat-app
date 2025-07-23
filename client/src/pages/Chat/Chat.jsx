@@ -7,6 +7,9 @@ import { setContent } from '../../features/menu/menuSlice';
 import { addMessage, setCurrentChat, fetchMessages, addUserToChat, fetchChats, kickUserFromChat, editChat, setAvailable } from '../../features/chat/chatSlice';
 import { getAllUsers } from '../../features/users/usersSlice';
 import { FaUserPlus } from "react-icons/fa6";
+import { IoSend } from "react-icons/io5";
+import { IoCaretDown } from "react-icons/io5";
+import { IoPencil } from "react-icons/io5";
 import usernameValidator from '../../validators/usernameValidator';
 import passwordValidator from '../../validators/passwordValidator';
 import inviteCodeValidator from '../../validators/inviteCodeValidator';
@@ -88,7 +91,7 @@ function Chat() {
 			dispatch(setContent(
 				<>
 					<h1>Enter chat password</h1>
-					<Input type='password' placeholder='Password' validator={passwordValidator} />
+					<Input type='password' placeholder='Password' validator={passwordValidator} className={cn('wide')} />
 					<button onClick={enterClickHandler}>Enter</button>
 				</>
 			));
@@ -220,8 +223,8 @@ function Chat() {
 		dispatch(setContent(
 			<>
 				<h1>Add user</h1>
-				<Input type='text' placeholder='Username' validator={usernameValidator} />
-				<Input type='text' placeholder='Invite-code' validator={inviteCodeValidator} />
+				<Input type='text' placeholder='Username' validator={usernameValidator} className={cn('wide')} />
+				<Input type='text' placeholder='Invite-code' validator={inviteCodeValidator} className={cn('wide')} />
 				<button onClick={addClickHandler}>Add user</button>
 			</>
 		));
@@ -323,11 +326,17 @@ function Chat() {
 						<Flex align='center' justify='center' gap onlyGap fitY className={cn(styles.input)}>
 							<Input type='text' autoUpdate def={input} onChange={(_, value) => setInput(value)} placeholder={mode === 'edit' ? 'Edit your message...' : 'Write your message...'} className={cn('wide')} />
 							{mode === 'edit' ? (
-								<button className={cn(styles.send)} onClick={editMessage}>Edit</button>
+								<button className={cn(styles.send)} onClick={editMessage}>
+									<IoPencil />
+								</button>
 							) : (
-								<button className={cn(styles.send)} onClick={sendMessage}>Send</button>
+								<button className={cn(styles.send)} onClick={sendMessage}>
+									<IoSend />
+								</button>
 							)}
-							<button onClick={scrollDownClickHandler}>Down</button>
+							<button className={cn('white')} onClick={scrollDownClickHandler}>
+								<IoCaretDown />
+							</button>
 						</Flex>
 					</Flex>
 					<Flex direction='column' className={cn(styles.overflow)} fitX borders={['left']}>
