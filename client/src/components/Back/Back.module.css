@@ -6,9 +6,9 @@
     top: var(--secondary-padding);
     left: var(--secondary-padding);
 }
-.back{
+/* .back{
     background-color: var(--primary-color);
 }
 .back:hover{
     background-color: var(--primary-color);
-}
+} */

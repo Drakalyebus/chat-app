@@ -334,7 +334,7 @@ function Chat() {
 						<Flex direction='column' gap fitY>
 							<Flex justify='stretch' gap onlyGap fitY>
 								<Input type='text' className={cn('wide')} def={searchUsers} onChange={(_, value) => setSearchUsers(value)} placeholder='Search users...' />
-								<button className={cn(styles.addUser)} onClick={addUserClickHandler} >
+								<button className={cn('white')} onClick={addUserClickHandler} >
 									<FaUserPlus />
 								</button>
 							</Flex>

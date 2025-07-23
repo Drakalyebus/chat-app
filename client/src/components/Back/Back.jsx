@@ -20,7 +20,7 @@ function Back({ absolute = true }) {
     if (location.pathname === '/welcome') return <></>;
 
     return (
-        <button className={cn("mini", styles.back, { [styles.absolute]: absolute })} onClick={backClickHandler}>
+        <button className={cn("mini", "white", styles.back, { [styles.absolute]: absolute })} onClick={backClickHandler}>
             <IoMdArrowRoundBack />
         </button>
     )

@@ -27,4 +27,8 @@
     position: absolute;
     top: var(--secondary-padding);
     left: var(--secondary-padding);
+    background-color: var(--primary-color);
+}
+.close:hover{
+    background-color: var(--primary-color);
 }

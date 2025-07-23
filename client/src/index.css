@@ -38,6 +38,9 @@ button{
     font-size: large;
     position: relative;
 }
+button *{
+    color: var(--light-text-color);
+}
 button:hover{
     background-color: var(--button-hover-color);
     transform: translateY(2px);
@@ -50,8 +53,14 @@ button.white{
     color: var(--usual-text-color);
     border: var(--border);
 }
+button.white *{
+    color: var(--usual-text-color);
+}
 button.white:hover{
     background-color: var(--button-color);
+    color: var(--light-text-color);
+}
+button.white:hover *{
     color: var(--light-text-color);
 }
 button.mini{
