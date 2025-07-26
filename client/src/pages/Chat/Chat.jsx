@@ -14,7 +14,6 @@ import usernameValidator from '../../validators/usernameValidator';
 import passwordValidator from '../../validators/passwordValidator';
 import inviteCodeValidator from '../../validators/inviteCodeValidator';
 import Message from '../../components/Message/Message';
-import desame from '../../utils/desame';
 import Input from '../../components/Input/Input';
 import Back from '../../components/Back/Back';
 import { checkPasswordAPI } from '../../features/chat/chatAPI';
@@ -42,6 +41,7 @@ function Chat() {
 	const [searchUsers, setSearchUsers] = useState('');
 	const [searchMessages, setSearchMessages] = useState('');
 	const navigate = useNavigate();
+	const [canSend, setCanSend] = useState(true);
 
 	useEffect(() => {
 		dispatch(setAvailable(isAvailable));
@@ -158,7 +158,13 @@ function Chat() {
 	}, [messages])
 
     const sendMessage = () => {
-		if (!socket || !input.trim()) return
+		if (!socket || !input.trim() || !canSend) return
+
+		setCanSend(false);
+
+		setTimeout(() => {
+			setCanSend(true);
+		}, 1000);
 
 		socket.emit('sendMessage', {
 			text: input,
@@ -274,118 +280,120 @@ function Chat() {
 	);
 
     return (
-		<>
-			<Flex direction='column' justify='stretch'>
-				<Flex gap justify='stretch' fitY>
-					<Back absolute={false} />
-					<Input type='text' placeholder='Chat title' className={cn('wide', 'invisible', styles.title)} onChange={titleChangeHandler} def={title} />
-				</Flex>
-				<Flex justify='stretch' borders={['top']}>
-					<Flex direction='column' justify='stretch' gap className={cn(styles.container)}>
-						<Input def={searchMessages} onChange={(_, value) => setSearchMessages(value)} type="text" placeholder="Search messages..." className={cn(styles.search)} />
-						<Flex ref={messagesRef} direction='column' className={cn(styles.overflow)}>
-							<Flex direction='column' gap onlyGap fitY>
-								{messages.filter(message => message.text.toLowerCase().includes(searchMessages.toLowerCase())).map(message => {
-									const clickHandler = () => {
-										if (message.author === user._id) {
-											const deleteClickHandler = () => {
-												if (!socket) return
-
-												socket.emit('deleteMessage', {
-													messageId: message._id
-												})
-
-												dispatch(fetchMessages(chatId));
-												dispatch(setContent(undefined));
-											}
-											const editClickHandler = () => {
-												setMode('edit');
-												setInput(message.text);
-												setSelectedMessage(message._id);
-												dispatch(setContent(undefined));
-											}
-
-											dispatch(setContent(
-												<>
-													<h1>Actions with message</h1>
-													<Flex gap onlyGap justify='stretch'>
-														<button onClick={deleteClickHandler} className={cn('wide')}>Delete</button>
-														<button onClick={editClickHandler} className={cn('wide')}>Edit</button>
-													</Flex>
-												</>
-											))
-										}
-									}
-
-									return (
-										<Message className={cn({ [styles.selected] : selectedMessage === message._id })} title={message.author === user._id ? 'Click to act' : ''} onClick={clickHandler} key={message._id} {...message} author={[...users, user].find(user => user._id === message?.author)?.username || 'Unknown user'} />
-									)
-								})}
-							</Flex>
-						</Flex>
-						<Flex align='center' justify='center' gap onlyGap fitY className={cn(styles.input)}>
-							<Input type='text' autoUpdate def={input} onChange={(_, value) => setInput(value)} placeholder={mode === 'edit' ? 'Edit your message...' : 'Write your message...'} className={cn('wide')} />
-							{mode === 'edit' ? (
-								<button className={cn(styles.send)} onClick={editMessage}>
-									<IoPencil />
-								</button>
-							) : (
-								<button className={cn(styles.send)} onClick={sendMessage}>
-									<IoSend />
-								</button>
-							)}
-							<button className={cn('white')} onClick={scrollDownClickHandler}>
-								<IoCaretDown />
-							</button>
-						</Flex>
-					</Flex>
-					<Flex direction='column' className={cn(styles.overflow)} fitX borders={['left']}>
-						<Flex direction='column' gap fitY>
-							<Flex justify='stretch' gap onlyGap fitY>
-								<Input type='text' className={cn('wide')} def={searchUsers} onChange={(_, value) => setSearchUsers(value)} placeholder='Search users...' />
-								<button className={cn('white')} onClick={addUserClickHandler} >
-									<FaUserPlus />
-								</button>
-							</Flex>
-							{[...chatUsers, user].filter(user => user.username.toLowerCase().includes(searchUsers.toLowerCase())).map(user2 => {
+		<Flex direction='column' justify='stretch'>
+			<Flex gap justify='stretch' fitY>
+				<Back absolute={false} />
+				<Input type='text' placeholder='Chat title' className={cn('wide', 'invisible', styles.title)} onChange={titleChangeHandler} def={title} />
+			</Flex>
+			<Flex justify='stretch' borders={['top']}>
+				<Flex direction='column' justify='stretch' gap className={cn(styles.container)}>
+					<Input def={searchMessages} onChange={(_, value) => setSearchMessages(value)} type="text" placeholder="Search messages..." className={cn(styles.search)} />
+					<Flex ref={messagesRef} direction='column' className={cn(styles.overflow)}>
+						<Flex direction='column' gap onlyGap fitY>
+							{messages.filter(message => message.text.toLowerCase().includes(searchMessages.toLowerCase())).map(message => {
 								const clickHandler = () => {
-									const kickClickHandler = async () => {
-										try{
-											await dispatch(kickUserFromChat({
-												chatId,
-												userId: user2._id
-											})).unwrap()
-											dispatch(fetchChats());
+									if (message.author === user._id) {
+										const deleteClickHandler = () => {
+											if (!socket) return
+
+											socket.emit('deleteMessage', {
+												messageId: message._id
+											})
+
+											dispatch(fetchMessages(chatId));
 											dispatch(setContent(undefined));
-										} catch {
-											dispatch(setContent(
-												<>
-													<h1 className={cn(styles.error)}>Something went wrong</h1>
-													<span className={cn(styles.error)}>Try to reload the page</span>
-												</>
-											))
 										}
+										const editClickHandler = () => {
+											setMode('edit');
+											setInput(message.text);
+											setSelectedMessage(message._id);
+											dispatch(setContent(undefined));
+										}
+
+										dispatch(setContent(
+											<>
+												<h1>Actions with message</h1>
+												<Flex gap onlyGap justify='stretch'>
+													<button onClick={deleteClickHandler} className={cn('wide')}>Delete</button>
+													<button onClick={editClickHandler} className={cn('wide')}>Edit</button>
+												</Flex>
+											</>
+										))
 									}
-									const leaveClickHandler = async () => {
-										kickClickHandler();
-										dispatch(setAvailable(false));
-										navigate('/');
-									}
-									dispatch(setContent(
-										<>
-											<h1>Moderate</h1>
-											{user2._id === user._id ? <button onClick={leaveClickHandler}>Leave</button> : <button onClick={kickClickHandler}>Kick</button>}
-										</>
-									));
+								}
+								const copyClickHandler = (e) => {
+									e.preventDefault();
+									navigator.clipboard.writeText(message.text);
 								}
 
-								return <button className={cn('wide', 'white')} key={user2._id} onClick={clickHandler}>{user2.username}</button>
+								return (
+									<Message className={cn({ [styles.selected] : selectedMessage === message._id })} title={message.author === user._id ? 'Click to act' : ''} onContextMenu={copyClickHandler} onClick={clickHandler} key={message._id} {...message} author={[...users, user].find(user => user._id === message?.author)?.username || 'Unknown user'} />
+								);
 							})}
 						</Flex>
 					</Flex>
+					<Flex align='center' justify='center' gap onlyGap fitY className={cn(styles.input)}>
+						<Input type='text' autoUpdate def={input} onChange={(_, value) => setInput(value)} placeholder={mode === 'edit' ? 'Edit your message...' : 'Write your message...'} className={cn('wide')} />
+						{mode === 'edit' ? (
+							<button className={cn(styles.send)} onClick={editMessage}>
+								<IoPencil />
+							</button>
+						) : (
+							<button className={cn(styles.send, { [styles.blocked] : !canSend })} onClick={sendMessage}>
+								<IoSend />
+							</button>
+						)}
+						<button className={cn('white')} onClick={scrollDownClickHandler}>
+							<IoCaretDown />
+						</button>
+					</Flex>
+				</Flex>
+				<Flex direction='column' className={cn(styles.overflow)} fitX borders={['left']}>
+					<Flex direction='column' gap fitY>
+						<Flex justify='stretch' gap onlyGap fitY>
+							<Input type='text' className={cn('wide')} def={searchUsers} onChange={(_, value) => setSearchUsers(value)} placeholder='Search users...' />
+							<button className={cn('white')} onClick={addUserClickHandler} >
+								<FaUserPlus />
+							</button>
+						</Flex>
+						{[...chatUsers, user].filter(user => user.username.toLowerCase().includes(searchUsers.toLowerCase())).map(user2 => {
+							const clickHandler = () => {
+								const kickClickHandler = async () => {
+									try{
+										await dispatch(kickUserFromChat({
+											chatId,
+											userId: user2._id
+										})).unwrap()
+										dispatch(fetchChats());
+										dispatch(setContent(undefined));
+									} catch {
+										dispatch(setContent(
+											<>
+												<h1 className={cn(styles.error)}>Something went wrong</h1>
+												<span className={cn(styles.error)}>Try to reload the page</span>
+											</>
+										))
+									}
+								}
+								const leaveClickHandler = async () => {
+									kickClickHandler();
+									dispatch(setAvailable(false));
+									navigate('/');
+								}
+								dispatch(setContent(
+									<>
+										<h1>Moderate</h1>
+										{user2._id === user._id ? <button onClick={leaveClickHandler}>Leave</button> : <button onClick={kickClickHandler}>Kick</button>}
+									</>
+								));
+							}
+
+							return <button className={cn('wide', 'white')} key={user2._id} onClick={clickHandler}>{user2.username}</button>
+						})}
+					</Flex>
 				</Flex>
 			</Flex>
-		</>
+		</Flex>
     )
 }
 

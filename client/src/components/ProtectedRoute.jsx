@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Navigate, Outlet } from 'react-router-dom'
-import { checkAuth, refresh } from '../features/auth/authSlice'
+import { checkAuth } from '../features/auth/authSlice'
 import Loading from './Loading/Loading'
 
 const ProtectedRoute = ({ anti }) => {

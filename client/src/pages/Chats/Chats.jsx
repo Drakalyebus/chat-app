@@ -165,10 +165,7 @@ function Chats() {
             <Flex justify="stretch">
                 <Flex direction='column' justify='stretch' borders={['right']} fitX>
                     <Flex direction='column' fitY gap>
-                        <Flex fitY gap onlyGap justify='stretch'>
-                            <Back absolute={false} />
-                            <span>You are logged in as</span>
-                        </Flex>
+                        <span>You are logged in as</span>
                         <h1>{user.username}</h1>
                         <span>{user.email}</span>
                         <Flex fitY gap onlyGap justify='stretch'>

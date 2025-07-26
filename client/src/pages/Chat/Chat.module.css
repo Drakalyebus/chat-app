@@ -25,3 +25,8 @@
 .error{
     color: var(--error-color);
 }
+.blocked{
+    filter: brightness(0.5);
+    pointer-events: none;
+    cursor: not-allowed;
+}

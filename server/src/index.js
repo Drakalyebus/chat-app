@@ -3,6 +3,7 @@ import cors from 'cors'
 import dotenv from 'dotenv'
 import express from 'express'
 import http from 'http'
+import helmet from 'helmet'
 import mongoose from 'mongoose'
 import morgan from 'morgan'
 import { Server as IOServer } from 'socket.io'
@@ -27,6 +28,7 @@ mongoose
 const app = express()
 
 app.use(cors({ origin: [process.env.CLIENT_URL], credentials: true }))
+app.use(helmet())
 app.use(morgan('dev'))
 app.use(express.json())
 app.use(cookieParser())

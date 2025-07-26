@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react';
 import styles from './Message.module.css';
 import Flex from '../Flex/Flex';
 
-function Message({ text = "", author = "", className, createdAt = new Date(), ...props }) {
+function Message({ text = "", showAuthor = true, author = "", className, createdAt = new Date(), ...props }) {
     const { user } = useSelector(state => state.auth);
     const [isSpamMessage, setIsSpamMessage] = useState(false);
 
@@ -13,7 +13,7 @@ function Message({ text = "", author = "", className, createdAt = new Date(), ..
 
     return (
         <Flex {...props} align='start' direction='column' className={cn(styles.message, className)} fitX fitY gap>
-            <span className={cn(styles.author, { [styles.selfAuthor]: user.username === author })}>{author}</span>
+            {showAuthor ? <span className={cn(styles.author, { [styles.selfAuthor]: user.username === author })}>{author}</span> : <></>}
             <Flex align='end' direction='column' gap className={cn(styles.content, { [styles.self]: user.username === author })} fitX>
                 <span className={cn('wide', styles.text)}>{isSpamMessage ? `[Potential spam] ${text}` : text}</span>
                 <span className={cn(styles.date)}>{new Date(createdAt).toLocaleString()}</span>

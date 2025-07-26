@@ -154,7 +154,7 @@ export const refresh = async (req, res, next) => {
 export const logout = async (req, res, next) => {
 	try {
 		// res.clearCookie('refreshToken', { httpOnly: true })
-		// res.clearCookie('accessToken', { httpOnly: true })
+		res.clearCookie('accessToken', { httpOnly: true })
 		res.json({ message: 'Вы вышли из аккаунта' })
 	} catch (err) {
 		next(err)
