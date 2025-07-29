@@ -179,7 +179,7 @@ function Chats() {
                             <h1>Users</h1>
                             <Input placeholder='Search users...' onChange={searchUsersChangeHandler} def={searchUsers} className={cn('wide')} />
                             {
-                                Array.from(users).sort((a, b) => b.chats.length - a.chats.length).filter(user => user.username.toLowerCase().includes(searchUsers.toLowerCase())).map(user => 
+                                Array.from(users).sort((a, b) => b.chats?.length - a.chats?.length).filter(user => user.username.toLowerCase().includes(searchUsers.toLowerCase())).map(user => 
                                     <button key={user._id} className={cn("wide", "white", styles.user)} onClick={() => clickHandler(user._id)}>{user.username}</button>
                                 )
                             }
